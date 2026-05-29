@@ -4,11 +4,13 @@ import '../styles/global.css';
 export interface Props {
   title?: string;
   description?: string;
+  show3D?: boolean;
 }
 
 const {
   title = 'Wall Street Mavericks | Infraestructura Cuantitativa y Flujo de Órdenes',
   description = 'Desarrollo, estrés estadístico y ejecución algorítmica. La diferencia absoluta entre adivinar y operar con ventaja matemática.',
+  show3D = false,
 } = Astro.props;
 ---
 
@@ -184,11 +186,13 @@ const {
       Visible behind .section-scroll (transparent bg).
       Fades to opacity:0 when user enters .section-standard zones.
     -->
-    <canvas
-      id="wsm-webgl"
-      aria-hidden="true"
-      style="position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;display:block;will-change:transform;"
-    ></canvas>
+    {show3D && (
+      <canvas
+        id="wsm-webgl"
+        aria-hidden="true"
+        style="position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;display:block;will-change:transform;"
+      ></canvas>
+    )}
 
     <slot />
 
@@ -235,6 +239,7 @@ const {
          No while, no break, no continue, no pass.
          All iteration: forEach, map, for(;;), traverse callbacks.
     ══════════════════════════════════════════════════════════════ -->
+    {show3D && (
     <script>
     import * as THREE from 'three';
 
@@ -742,5 +747,6 @@ const {
       }, { passive: true });
     }
     </script>
+    )}
   </body>
 </html>

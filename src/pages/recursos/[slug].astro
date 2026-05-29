@@ -1,0 +1,179 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+
+export async function getStaticPaths() {
+  const recursosEntries = await getCollection('recursos');
+  return recursosEntries.map(entry => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<BaseLayout 
+  title={`${entry.data.title} | WSM Laboratorio`} 
+  description={entry.data.description}
+  show3D={false}
+>
+  <Nav />
+
+  <main class="doc-container">
+    <article class="doc-article">
+      <header class="doc-header">
+        <a href="/recursos" class="back-link">← Volver al Laboratorio</a>
+        
+        <div class="doc-meta">
+          <span class="doc-category">{entry.data.category}</span>
+          <time class="doc-date" datetime={entry.data.pubDate.toISOString()}>
+            {entry.data.pubDate.toLocaleDateString('es-ES', { 
+              year: 'numeric', month: 'long', day: 'numeric' 
+            })}
+          </time>
+        </div>
+
+        <h1 class="doc-title">{entry.data.title}</h1>
+        <p class="doc-description">{entry.data.description}</p>
+        
+        <div class="doc-status">
+          {entry.data.oosValidated ? (
+             <span class="status-validated"><span class="status-dot"></span>Validación OOS: Completada</span>
+          ) : (
+             <span class="status-pending"><span class="status-dot"></span>Validación OOS: Pendiente</span>
+          )}
+        </div>
+      </header>
+
+      <div class="doc-content prose prose-invert">
+        <Content />
+      </div>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .doc-container {
+    padding: 120px 2rem 6rem;
+    min-height: 80vh;
+  }
+  
+  .doc-article {
+    max-width: 48rem; /* max-w-3xl */
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .doc-header {
+    margin-bottom: 4rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .back-link {
+    display: inline-block;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    color: #6B7280;
+    text-decoration: none;
+    margin-bottom: 2rem;
+    transition: color 0.2s ease;
+  }
+  .back-link:hover {
+    color: #00FF66;
+  }
+
+  .doc-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    font-family: 'Inter', sans-serif;
+  }
+  .doc-category {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #080808;
+    background: #00FF66;
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+  }
+  .doc-date {
+    font-size: 0.85rem;
+    color: #9CA3AF;
+  }
+
+  .doc-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.1;
+    margin: 0 0 1.5rem 0;
+  }
+  .doc-description {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #D1D5DB;
+    margin: 0 0 2rem 0;
+  }
+
+  .doc-status {
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+  }
+  .status-validated { color: #00FF66; display: flex; align-items: center; gap: 0.5rem; }
+  .status-pending { color: #F59E0B; display: flex; align-items: center; gap: 0.5rem; }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+
+  /* Content Styling (Tailwind Prose equivalent simulation if @tailwindcss/typography is not present) */
+  .doc-content {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: #D1D5DB;
+  }
+  .doc-content :global(h2) {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 3rem 0 1rem;
+  }
+  .doc-content :global(h3) {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #E5E7EB;
+    margin: 2rem 0 1rem;
+  }
+  .doc-content :global(p) {
+    margin: 0 0 1.5rem 0;
+  }
+  .doc-content :global(ul) {
+    margin: 0 0 1.5rem 2rem;
+    list-style-type: disc;
+  }
+  .doc-content :global(li) {
+    margin-bottom: 0.5rem;
+  }
+  .doc-content :global(strong) {
+    color: #fff;
+    font-weight: 600;
+  }
+  .doc-content :global(code) {
+    font-family: 'Courier New', monospace;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+</style>
