@@ -7,7 +7,7 @@ import Footer from '../../components/Footer.astro';
 export async function getStaticPaths() {
   const recursosEntries = await getCollection('recursos');
   return recursosEntries.map(entry => ({
-    params: { slug: entry.slug },
+    params: { slug: entry.id },
     props: { entry },
   }));
 }
