@@ -1,0 +1,152 @@
+---
+// SvgTextures.astro
+// Renders inline SVG mathematical background patterns at ultra-low opacity.
+// No images, no stock assets — pure vector math.
+export interface Props {
+  variant?: 'neural' | 'gauss' | 'flow' | 'grid';
+  class?: string;
+}
+const { variant = 'neural', class: className = '' } = Astro.props;
+---
+
+{variant === 'neural' && (
+  <svg
+    class={`absolute inset-0 w-full h-full pointer-events-none ${className}`}
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+    preserveAspectRatio="xMidYMid slice"
+  >
+    <defs>
+      <radialGradient id="node-glow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#00FF66" stop-opacity="0.4" />
+        <stop offset="100%" stop-color="#00FF66" stop-opacity="0" />
+      </radialGradient>
+    </defs>
+    <!-- Neural network nodes and edges — opacity 5-8% -->
+    <g opacity="0.06" stroke="#00FF66" fill="none" stroke-width="0.5">
+      <!-- Layer 1 nodes -->
+      <circle cx="8%" cy="20%" r="3" fill="#00FF66" opacity="0.5"/>
+      <circle cx="8%" cy="40%" r="3" fill="#00FF66" opacity="0.5"/>
+      <circle cx="8%" cy="60%" r="3" fill="#00FF66" opacity="0.5"/>
+      <circle cx="8%" cy="80%" r="3" fill="#00FF66" opacity="0.5"/>
+      <!-- Layer 2 nodes -->
+      <circle cx="30%" cy="25%" r="3" fill="#00FF66" opacity="0.5"/>
+      <circle cx="30%" cy="45%" r="3" fill="#00FF66" opacity="0.5"/>
+      <circle cx="30%" cy="65%" r="3" fill="#00FF66" opacity="0.5"/>
+      <circle cx="30%" cy="75%" r="3" fill="#00FF66" opacity="0.5"/>
+      <!-- Layer 3 nodes -->
+      <circle cx="55%" cy="30%" r="3" fill="#00FF66" opacity="0.5"/>
+      <circle cx="55%" cy="50%" r="3" fill="#00FF66" opacity="0.5"/>
+      <circle cx="55%" cy="70%" r="3" fill="#00FF66" opacity="0.5"/>
+      <!-- Layer 4 nodes -->
+      <circle cx="78%" cy="35%" r="3" fill="#00FF66" opacity="0.5"/>
+      <circle cx="78%" cy="55%" r="3" fill="#00FF66" opacity="0.5"/>
+      <circle cx="78%" cy="75%" r="3" fill="#00FF66" opacity="0.5"/>
+      <!-- Output -->
+      <circle cx="95%" cy="45%" r="4" fill="#00FF66" opacity="0.7"/>
+      <circle cx="95%" cy="65%" r="4" fill="#00FF66" opacity="0.7"/>
+
+      <!-- Connections L1→L2 -->
+      <line x1="8%" y1="20%" x2="30%" y2="25%"/>
+      <line x1="8%" y1="20%" x2="30%" y2="45%"/>
+      <line x1="8%" y1="20%" x2="30%" y2="65%"/>
+      <line x1="8%" y1="40%" x2="30%" y2="25%"/>
+      <line x1="8%" y1="40%" x2="30%" y2="45%"/>
+      <line x1="8%" y1="40%" x2="30%" y2="65%"/>
+      <line x1="8%" y1="40%" x2="30%" y2="75%"/>
+      <line x1="8%" y1="60%" x2="30%" y2="45%"/>
+      <line x1="8%" y1="60%" x2="30%" y2="65%"/>
+      <line x1="8%" y1="60%" x2="30%" y2="75%"/>
+      <line x1="8%" y1="80%" x2="30%" y2="65%"/>
+      <line x1="8%" y1="80%" x2="30%" y2="75%"/>
+      <!-- Connections L2→L3 -->
+      <line x1="30%" y1="25%" x2="55%" y2="30%"/>
+      <line x1="30%" y1="25%" x2="55%" y2="50%"/>
+      <line x1="30%" y1="45%" x2="55%" y2="30%"/>
+      <line x1="30%" y1="45%" x2="55%" y2="50%"/>
+      <line x1="30%" y1="45%" x2="55%" y2="70%"/>
+      <line x1="30%" y1="65%" x2="55%" y2="50%"/>
+      <line x1="30%" y1="65%" x2="55%" y2="70%"/>
+      <line x1="30%" y1="75%" x2="55%" y2="70%"/>
+      <!-- Connections L3→L4 -->
+      <line x1="55%" y1="30%" x2="78%" y2="35%"/>
+      <line x1="55%" y1="30%" x2="78%" y2="55%"/>
+      <line x1="55%" y1="50%" x2="78%" y2="35%"/>
+      <line x1="55%" y1="50%" x2="78%" y2="55%"/>
+      <line x1="55%" y1="50%" x2="78%" y2="75%"/>
+      <line x1="55%" y1="70%" x2="78%" y2="55%"/>
+      <line x1="55%" y1="70%" x2="78%" y2="75%"/>
+      <!-- Connections L4→Output -->
+      <line x1="78%" y1="35%" x2="95%" y2="45%"/>
+      <line x1="78%" y1="55%" x2="95%" y2="45%"/>
+      <line x1="78%" y1="55%" x2="95%" y2="65%"/>
+      <line x1="78%" y1="75%" x2="95%" y2="65%"/>
+    </g>
+  </svg>
+)}
+
+{variant === 'gauss' && (
+  <svg
+    class={`absolute inset-0 w-full h-full pointer-events-none ${className}`}
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+    viewBox="0 0 1200 400"
+    preserveAspectRatio="xMidYMid slice"
+  >
+    <defs>
+      <clipPath id="gauss-clip">
+        <rect width="1200" height="400"/>
+      </clipPath>
+    </defs>
+    <g clip-path="url(#gauss-clip)" opacity="0.07" fill="none" stroke="#00FF66" stroke-width="1.2">
+      <!-- Gaussian bell curve -->
+      <path d="M 0,380 C 100,380 180,380 250,370 C 300,360 340,320 380,260 C 420,200 450,140 500,90 C 540,50 570,20 600,15 C 630,10 660,30 700,60 C 740,100 760,160 800,220 C 840,280 880,340 920,370 C 960,385 1020,390 1100,390 L 1200,390" />
+      <!-- Second shifted curve -->
+      <path d="M 0,390 C 80,390 150,388 220,380 C 280,370 320,345 370,300 C 410,255 440,200 480,155 C 515,110 550,75 590,60 C 620,48 650,55 680,70 C 720,90 745,130 785,180 C 820,225 855,280 900,330 C 940,370 990,388 1060,393 L 1200,395" stroke-width="0.6" opacity="0.6"/>
+      <!-- Standard deviation lines -->
+      <line x1="480" y1="0" x2="480" y2="400" stroke-dasharray="4,8" stroke-width="0.5" opacity="0.4"/>
+      <line x1="600" y1="0" x2="600" y2="400" stroke-dasharray="4,8" stroke-width="0.5" opacity="0.4"/>
+      <line x1="720" y1="0" x2="720" y2="400" stroke-dasharray="4,8" stroke-width="0.5" opacity="0.4"/>
+      <!-- Mu label proxy (dot) -->
+      <circle cx="600" cy="15" r="3" fill="#00FF66" opacity="0.6"/>
+    </g>
+  </svg>
+)}
+
+{variant === 'flow' && (
+  <svg
+    class={`absolute inset-0 w-full h-full pointer-events-none ${className}`}
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+    preserveAspectRatio="xMidYMid slice"
+  >
+    <defs>
+      <pattern id="grid-pattern" width="60" height="60" patternUnits="userSpaceOnUse">
+        <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#00FF66" stroke-width="0.4"/>
+      </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#grid-pattern)" opacity="0.06"/>
+    <!-- Data flow arrows -->
+    <g opacity="0.05" stroke="#00FF66" fill="none" stroke-width="1">
+      <path d="M 10% 50% L 90% 50%" marker-end="url(#arrow)"/>
+      <path d="M 20% 20% L 80% 80%" />
+      <path d="M 80% 20% L 20% 80%" />
+    </g>
+  </svg>
+)}
+
+{variant === 'grid' && (
+  <svg
+    class={`absolute inset-0 w-full h-full pointer-events-none ${className}`}
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+    preserveAspectRatio="xMidYMid slice"
+  >
+    <defs>
+      <pattern id="dot-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+        <circle cx="20" cy="20" r="0.8" fill="#00FF66"/>
+      </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#dot-grid)" opacity="0.07"/>
+  </svg>
+)}

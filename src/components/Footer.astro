@@ -1,0 +1,118 @@
+---
+// Footer.astro
+import logo from '../LOGO_MAVERICKS_SINFONDO.png';
+---
+
+<footer
+  role="contentinfo"
+  style="
+    background: #080808;
+    border-top: 1px solid rgba(0,255,102,0.1);
+    padding: 2.5rem 0;
+  "
+>
+  <div style="
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  " class="footer-inner">
+
+    <!-- Left: logo oficial + copyright -->
+    <div style="display: flex; align-items: center; gap: 0.875rem; flex-wrap: wrap;">
+      <img
+        src={logo.src}
+        alt="Wall Street Mavericks"
+        width={logo.width}
+        height={logo.height}
+        style="height:28px;width:auto;display:block;object-fit:contain;opacity:0.8;"
+        loading="lazy"
+        decoding="async"
+      />
+      <span style="
+        font-family: 'Inter', sans-serif;
+        font-size: 0.75rem;
+        color: #374151;
+        letter-spacing: 0.02em;
+      ">© 2026 Wall Street Mavericks. Todos los derechos reservados.</span>
+    </div>
+
+    <!-- Right: legal links -->
+    <nav aria-label="Pie de página — enlaces legales">
+      <ul style="
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        flex-wrap: wrap;
+      ">
+        {[
+          { label: 'Aviso Legal', href: '#' },
+          { label: 'Riesgos del Trading', href: '#' },
+          { label: 'Contacto', href: '#laboratorio' },
+        ].map((link, i) => (
+          <>
+            <li>
+              <a
+                href={link.href}
+                style="
+                  font-family: 'Inter', sans-serif;
+                  font-size: 0.7rem;
+                  font-weight: 500;
+                  letter-spacing: 0.08em;
+                  text-transform: uppercase;
+                  color: #374151;
+                  text-decoration: none;
+                  padding: 0.25rem 0.5rem;
+                  transition: color 0.2s ease;
+                "
+                onmouseover="this.style.color='#00FF66'"
+                onmouseout="this.style.color='#374151'"
+              >{link.label}</a>
+            </li>
+            {i < 2 && (
+              <li aria-hidden="true" style="color: #1F2937; font-size: 0.6rem; user-select: none;">|</li>
+            )}
+          </>
+        ))}
+      </ul>
+    </nav>
+  </div>
+
+  <!-- Risk disclaimer -->
+  <div style="
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1.5rem 2rem 0;
+    border-top: 1px solid rgba(255,255,255,0.03);
+    margin-top: 1.5rem;
+  ">
+    <p style="
+      font-family: 'Inter', sans-serif;
+      font-size: 0.6rem;
+      line-height: 1.7;
+      color: #1F2937;
+      max-width: 900px;
+    ">
+      <strong style="color: #374151;">Aviso de riesgo:</strong>
+      El trading con apalancamiento conlleva un alto nivel de riesgo y puede no ser adecuado para todos los inversores.
+      Los resultados pasados no garantizan rendimientos futuros. Wall Street Mavericks proporciona contenido educativo e informativo únicamente.
+      No se trata de asesoramiento financiero. Opere solo con capital que pueda permitirse perder.
+    </p>
+  </div>
+</footer>
+
+<style>
+  @media (max-width: 640px) {
+    .footer-inner {
+      flex-direction: column !important;
+      align-items: flex-start !important;
+    }
+  }
+</style>

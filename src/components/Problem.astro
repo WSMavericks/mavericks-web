@@ -1,0 +1,126 @@
+---
+// Problem.astro — Section 2 refactored with rounded cards, hover lift, updated content
+import SvgTextures from './SvgTextures.astro';
+
+const metrics = [
+  { pct:90, label:'Traders liquidados por decisiones emocionales',   color:'#FF5566' },
+  { pct:12, label:'Estrategias manuales que sobreviven 10 años OOS', color:'#FF9944' },
+  { pct:85, label:'Tasa de fallo por sobreoptimización (Curve-fitting)', color:'#FFCC44' },
+];
+
+const cards = [
+  {
+    num:'01',
+    title:'Decisiones bajo presión emocional',
+    body:'El miedo y la avaricia cortocircuitan el análisis racional. Un trader en drawdown no es un analista: es un animal en modo supervivencia.',
+  },
+  {
+    num:'02',
+    title:'Estrategias sobreoptimizadas',
+    body:'Curva-ajustadas al histórico: perfectas en backtesting, inútiles en el mercado en vivo. El sesgo de confirmación hace el resto del daño.',
+  },
+  {
+    num:'03',
+    title:'Fatiga operativa acumulada',
+    body:'8 horas de pantalla degradan la calidad de ejecución de forma medible. El algoritmo no se cansa; aplica el mismo rigor estadístico en la operación 1 y en la 1.000.',
+  },
+];
+---
+
+<section id="problema" aria-labelledby="problema-heading"
+  style="position:relative;background:#0A0A0A;padding:7rem 0;overflow:hidden;border-top:1px solid rgba(0,255,102,0.07);">
+
+  <SvgTextures variant="gauss" />
+
+  <div style="max-width:1400px;margin:0 auto;padding:0 2rem;position:relative;z-index:10;">
+
+    <!-- Header -->
+    <div class="reveal" style="margin-bottom:4rem;">
+      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;">
+        <span style="display:inline-block;width:2rem;height:1px;background:#00FF66;"></span>
+        <span style="font-family:'Inter',sans-serif;font-size:0.6375rem;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:#00FF66;">02 — El Problema</span>
+      </div>
+      <h2 id="problema-heading" style="font-family:'Inter',sans-serif;font-weight:900;font-size:clamp(2rem,4.5vw,3.25rem);letter-spacing:-0.05em;color:#fff;line-height:1.05;max-width:18ch;margin:0;">
+        El riesgo letal del<br />
+        <span class="quant-hook" style="font-size:clamp(2.2rem,5vw,3.5rem);">sesgo humano.</span>
+      </h2>
+    </div>
+
+    <!-- Main 62/38 grid -->
+    <div class="problem-grid" style="display:grid;grid-template-columns:61.8fr 38.2fr;gap:5rem;align-items:start;margin-bottom:4.5rem;">
+
+      <!-- Left: body + stat bars -->
+      <div class="reveal reveal-delay-1">
+        <p style="font-family:'Inter',sans-serif;font-size:clamp(1rem,1.4vw,1.1rem);line-height:1.85;color:#D1D5DB;max-width:58ch;margin-bottom:2.5rem;">
+          El 90% de los traders fracasa por un error de ejecución, no por falta de capital. El miedo, la avaricia y la fatiga tras horas de pantalla cortocircuitan el análisis racional. Diseñar reglas a mano y enfrentarse a las estrictas reglas de Drawdown de las Prop Firms basándose en la intuición genera estrategias sobreoptimizadas. Es un
+          <span class="quant-hook">Suicidio Matemático.</span>
+        </p>
+
+        <!-- Stat bars from landing_content.md §2 -->
+        <div style="display:flex;flex-direction:column;gap:1rem;">
+          {metrics.map((m) => (
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:0.45rem;">
+                <span style="font-family:'Inter',sans-serif;font-size:0.75rem;color:#6B7280;">{m.label}</span>
+                <span style={`font-family:'Inter',sans-serif;font-size:0.75rem;font-weight:700;color:${m.color};`}>{m.pct}%</span>
+              </div>
+              <div style="height:2px;background:rgba(255,255,255,0.05);border-radius:999px;overflow:hidden;">
+                <div style={`height:100%;width:${m.pct}%;background:${m.color};border-radius:999px;opacity:0.75;`}></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Right: big stat + quote -->
+      <div class="reveal reveal-delay-2" style="display:flex;flex-direction:column;gap:1.25rem;">
+        <div style="background:#080808;border:1px solid rgba(0,255,102,0.15);border-radius:16px;padding:2rem 1.75rem;position:relative;overflow:hidden;transition:border-color 0.3s ease,box-shadow 0.3s ease;"
+          onmouseover="this.style.borderColor='rgba(0,255,102,0.4)';this.style.boxShadow='0 0 30px rgba(0,255,102,0.08)'"
+          onmouseout="this.style.borderColor='rgba(0,255,102,0.15)';this.style.boxShadow='none'">
+          <div style="font-family:'Inter',sans-serif;font-weight:900;font-size:4.5rem;letter-spacing:-0.07em;color:#00FF66;line-height:1;">90%</div>
+          <div style="font-family:'Inter',sans-serif;font-size:0.7rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:#4B5563;margin-top:0.75rem;">De los traders fracasa</div>
+          <div style="font-family:'Inter',sans-serif;font-size:0.8rem;color:#6B7280;margin-top:0.35rem;line-height:1.55;">por decisiones emocionales,<br />no por falta de capital.</div>
+        </div>
+
+        <div style="padding:1.25rem 1.5rem;border-left:2px solid #00FF66;background:rgba(0,255,102,0.03);border-radius:0 8px 8px 0;">
+          <p style="font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:0.92rem;color:#D1D5DB;line-height:1.65;">"La emoción es el enemigo del rendimiento. La estadística no tiene miedo."</p>
+          <p style="font-family:'Inter',sans-serif;font-size:0.65rem;color:#4B5563;margin-top:0.75rem;letter-spacing:0.1em;text-transform:uppercase;">— Wall Street Mavericks, Manifiesto Quant</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 pain cards — hover lift + green border -->
+    <div class="problem-cards" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(0,255,102,0.06);border-radius:16px;overflow:hidden;">
+      {cards.map((c, i) => (
+        <article
+          class={`reveal reveal-delay-${i}`}
+          style="
+            background:#080808;
+            padding:2.25rem 2rem;
+            transition:transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+            cursor:default;
+          "
+          onmouseover="this.style.transform='translateY(-4px)';this.style.background='#0C0C0C';this.style.boxShadow='0 8px 32px rgba(0,255,102,0.08)'"
+          onmouseout="this.style.transform='translateY(0)';this.style.background='#080808';this.style.boxShadow='none'"
+        >
+          <div style="font-family:'Inter',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(0,255,102,0.45);margin-bottom:1.25rem;display:flex;align-items:center;gap:0.5rem;">
+            <span style="display:inline-block;width:14px;height:1px;background:#00FF66;"></span>
+            Error {c.num}
+          </div>
+          <h3 style="font-family:'Inter',sans-serif;font-weight:800;font-size:1.0625rem;color:#fff;letter-spacing:-0.025em;margin-bottom:0.75rem;line-height:1.25;">{c.title}</h3>
+          <p style="font-family:'Inter',sans-serif;font-size:0.85rem;line-height:1.75;color:#6B7280;">{c.body}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  @media (max-width:900px) {
+    .problem-grid  { grid-template-columns:1fr !important; gap:2.5rem !important; }
+    .problem-cards { grid-template-columns:1fr !important; }
+  }
+  @media (min-width:600px) and (max-width:900px) {
+    .problem-cards { grid-template-columns:repeat(2,1fr) !important; }
+  }
+</style>

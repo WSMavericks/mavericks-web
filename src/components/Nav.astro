@@ -1,0 +1,95 @@
+---
+// Nav.astro — Fixed top navigation, refined rounded style
+import logo from '../LOGO_MAVERICKS_SINFONDO.png';
+---
+
+<header
+  id="main-nav"
+  style="position:fixed;top:0;left:0;right:0;z-index:100;border-bottom:1px solid transparent;transition:background-color 0.4s ease,backdrop-filter 0.4s ease,border-bottom-color 0.4s ease;"
+  role="banner"
+>
+  <nav
+    style="max-width:1400px;margin:0 auto;padding:0 2rem;height:68px;display:flex;align-items:center;justify-content:space-between;"
+    aria-label="Navegación principal"
+  >
+    <!-- Logo oficial -->
+    <a href="/" id="nav-logo" aria-label="Wall Street Mavericks — Inicio"
+      style="display:flex;align-items:center;text-decoration:none;flex-shrink:0;transition:opacity 0.2s ease;"
+      onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+      <img
+        src={logo.src}
+        alt="Wall Street Mavericks"
+        width={logo.width}
+        height={logo.height}
+        style="height:38px;width:auto;display:block;object-fit:contain;"
+        loading="eager"
+        decoding="async"
+      />
+    </a>
+
+    <!-- Desktop links -->
+    <ul id="nav-links" style="display:flex;align-items:center;gap:2.5rem;list-style:none;margin:0;padding:0;">
+      {[
+        { href:'#problema',    label:'El Problema'    },
+        { href:'#solucion',    label:'Infraestructura'},
+        { href:'#cerebro',     label:'Research'       },
+        { href:'#laboratorio', label:'Laboratorio'    },
+      ].map((l) => (
+        <li>
+          <a href={l.href} style="font-family:'Inter',sans-serif;font-size:0.75rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:#6B7280;text-decoration:none;transition:color 0.2s ease;"
+            onmouseover="this.style.color='#00FF66'" onmouseout="this.style.color='#6B7280'">
+            {l.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <!-- CTA -->
+    <a href="#laboratorio" class="btn-quant" id="nav-cta" style="display:none;padding:0.625rem 1.375rem;font-size:0.75rem;">
+      Acceder al Lab
+    </a>
+
+    <!-- Hamburger -->
+    <button id="mobile-menu-btn" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu"
+      style="display:none;background:transparent;border:none;cursor:pointer;padding:0.5rem;color:#D1D5DB;">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+        <rect x="0" y="4"  width="22" height="1.5" rx="1" fill="currentColor"/>
+        <rect x="0" y="10" width="22" height="1.5" rx="1" fill="currentColor"/>
+        <rect x="0" y="16" width="22" height="1.5" rx="1" fill="currentColor"/>
+      </svg>
+    </button>
+  </nav>
+
+  <!-- Mobile dropdown -->
+  <div id="mobile-menu" role="navigation" aria-label="Menú móvil"
+    style="display:none;flex-direction:column;background:rgba(8,8,8,0.98);border-top:1px solid rgba(0,255,102,0.12);padding:1.5rem 2rem;gap:1.25rem;backdrop-filter:blur(20px);">
+    <a href="#problema"    style="color:#D1D5DB;text-decoration:none;font-size:0.875rem;letter-spacing:0.08em;text-transform:uppercase;transition:color .2s;" onmouseover="this.style.color='#00FF66'" onmouseout="this.style.color='#D1D5DB'">El Problema</a>
+    <a href="#solucion"    style="color:#D1D5DB;text-decoration:none;font-size:0.875rem;letter-spacing:0.08em;text-transform:uppercase;transition:color .2s;" onmouseover="this.style.color='#00FF66'" onmouseout="this.style.color='#D1D5DB'">Infraestructura</a>
+    <a href="#cerebro"     style="color:#D1D5DB;text-decoration:none;font-size:0.875rem;letter-spacing:0.08em;text-transform:uppercase;transition:color .2s;" onmouseover="this.style.color='#00FF66'" onmouseout="this.style.color='#D1D5DB'">Research</a>
+    <a href="#laboratorio" style="color:#D1D5DB;text-decoration:none;font-size:0.875rem;letter-spacing:0.08em;text-transform:uppercase;transition:color .2s;" onmouseover="this.style.color='#00FF66'" onmouseout="this.style.color='#D1D5DB'">Laboratorio</a>
+    <a href="#laboratorio" class="btn-quant" style="text-align:center;margin-top:0.25rem;">Acceder al Lab</a>
+  </div>
+</header>
+
+<style>
+  @media (min-width: 768px) { #nav-cta { display: inline-flex !important; } }
+  @media (max-width: 767px) { #nav-links { display: none !important; } #mobile-menu-btn { display: block !important; } }
+</style>
+
+<script>
+  const mobileBtn  = document.getElementById('mobile-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  if (mobileBtn && mobileMenu) {
+    mobileBtn.addEventListener('click', () => {
+      const isOpen = mobileMenu.style.display === 'flex';
+      mobileMenu.style.display = isOpen ? 'none' : 'flex';
+      mobileBtn.setAttribute('aria-expanded', String(!isOpen));
+    });
+    mobileMenu.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        mobileMenu.style.display = 'none';
+        mobileBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+</script>

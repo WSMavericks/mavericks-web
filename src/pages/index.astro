@@ -1,0 +1,971 @@
+---
+// index.astro — Scroll-Jacking architecture with intra-section sub-slides.
+// 4 section-scroll containers (Hero, Problem, Solution, Lab).
+// Each has a sticky viewport + N sub-slides cross-faded by scroll progress.
+// Scroll data is written to window.__wsmScroll for the SceneManager (BaseLayout).
+
+import BaseLayout   from '../layouts/BaseLayout.astro';
+import Nav          from '../components/Nav.astro';
+import Solution     from '../components/Solution.astro';
+import Brain        from '../components/Brain.astro';
+import LeadCapture  from '../components/LeadCapture.astro';
+import Footer       from '../components/Footer.astro';
+---
+
+<BaseLayout
+  title="Wall Street Mavericks | Infraestructura Cuantitativa y Flujo de Órdenes"
+  description="Desarrollo, estrés estadístico y ejecución algorítmica. La diferencia absoluta entre adivinar y operar con ventaja matemática."
+>
+  <Nav />
+
+  <!--
+    ════════════════════════════════════════════════════════════════
+    SCROLL-JACKING ZONE — 4 tall sections with sticky viewports.
+    Background: transparent → fixed WebGL canvas shows through.
+    Each section has data-section for SceneManager + sub-slides
+    that cross-fade based on scroll progress.
+    Total scroll height ≈ 1200vh.
+    ════════════════════════════════════════════════════════════════
+  -->
+
+  <!-- ─────────────────────────────────────────────────────────
+       SECTION 1 · HERO — Order Flow Particles (250vh, 2 sub-slides)
+  ──────────────────────────────────────────────────────────── -->
+  <section
+    class="section-scroll"
+    data-section="hero"
+    id="inicio"
+    aria-labelledby="hero-heading"
+  >
+    <div class="sticky-stage">
+      <div class="stage-overlay" aria-hidden="true"></div>
+
+      <!-- Sub-slide 0: The Declaration -->
+      <div class="sub-slide" data-sub="0">
+        <div class="slide-inner">
+          <div class="copy-col">
+            <div class="eyebrow">
+              <span class="eyebrow-line"></span>
+              <span>Automatización e Infraestructura para Traders Institucionales</span>
+            </div>
+
+            <h1 id="hero-heading" class="display-heading">
+              No adivinamos<br />el mercado.<br />
+              <span class="quant-hook hook-xl">Lo procesamos.</span>
+            </h1>
+
+            <p class="body-copy">
+              El trading manual retail es un juego de azar emocional. En Wall Street Mavericks
+              construimos infraestructura de <span class="quant-hook">Minería de Datos</span>,
+              validación Monte Carlo y lectura de Order Flow puro para operar con
+              <span class="quant-hook">ventaja estadística comprobada.</span>
+            </p>
+
+            <div class="cta-row">
+              <a href="#portfolio" class="btn-quant" id="hero-cta-primary">Audita nuestros sistemas</a>
+              <a href="#problema"  class="btn-ghost" id="hero-cta-secondary">El Manifiesto Quant →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scroll hint — fades with sub-slide 0 -->
+        <div class="scroll-hint" aria-hidden="true">
+          <span class="scroll-label">Scroll</span>
+          <div class="scroll-line"></div>
+        </div>
+      </div>
+
+      <!-- Sub-slide 1: The Proof -->
+      <div class="sub-slide" data-sub="1">
+        <div class="slide-inner">
+          <div class="slide-grid hero-grid">
+
+            <!-- Left — stats -->
+            <div class="copy-col">
+              <div class="eyebrow">
+                <span class="eyebrow-line"></span>
+                <span>Métricas del Motor Cuantitativo</span>
+              </div>
+              <div class="stats-strip stats-strip--vertical">
+                <div class="stat-item">
+                  <div class="stat-val">12.4M+</div>
+                  <div class="stat-sub">Combinaciones analizadas</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-val">Monte Carlo</div>
+                  <div class="stat-sub">5.000 iter. / sistema</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-val">0ms</div>
+                  <div class="stat-sub">Latencia emocional</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right — terminal -->
+            <div class="panel-col">
+              <div class="terminal-float">
+                <div class="terminal-card">
+                  <div class="terminal-bar">
+                    <span class="dot dot-red"></span>
+                    <span class="dot dot-amber"></span>
+                    <span class="dot dot-green"></span>
+                    <span class="terminal-title">wsm_algo_engine v4.2 — LIVE</span>
+                  </div>
+                  <div class="terminal-body">
+                    <div><span class="t-green">$</span> <span class="t-light">init strategy_search --engine=SQX --mode=exhaustive</span></div>
+                    <div class="t-dim">→ Parameter space: <span class="t-light">12.4M combinations</span></div>
+                    <div class="t-dim">→ Walk-Forward OOS: <span class="t-light">70/30</span></div>
+                    <div class="mt-s"><span class="t-green">$</span> <span class="t-light">run monte_carlo --iter=5000 --stress=full</span></div>
+                    <div class="t-dim">→ Survival rate: <span class="t-green fw-bold">94.7%</span> ✓</div>
+                    <div class="mt-s"><span class="t-green">$</span> <span class="t-light">deploy --algo=WSM-TREND-01 --mode=live</span></div>
+                    <div class="t-dim">→ Edge confirmed. <span class="cursor-blink t-green">█</span></div>
+                    <div class="metrics-bar">
+                      <div class="metric"><div class="m-label">Win Rate</div><div class="m-val t-green">63.4%</div></div>
+                      <div class="metric"><div class="m-label">Sharpe</div><div class="m-val t-green">2.18</div></div>
+                      <div class="metric"><div class="m-label">Max DD</div><div class="m-val t-light">−8.2%</div></div>
+                      <div class="metric"><div class="m-label">OOS</div><div class="m-val t-green">PASS</div></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="corner-tl" aria-hidden="true"></div>
+                <div class="corner-br" aria-hidden="true"></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────────────────────
+       SECTION 2 · PROBLEM — Sistemas Quebrados (350vh, 3 sub-slides)
+  ──────────────────────────────────────────────────────────── -->
+  <section
+    class="section-scroll"
+    data-section="problem"
+    id="problema"
+    aria-labelledby="problema-heading"
+  >
+    <div class="sticky-stage">
+      <div class="stage-overlay" aria-hidden="true"></div>
+
+      <!-- Sub-slide 0: Pain Statement -->
+      <div class="sub-slide" data-sub="0">
+        <div class="slide-inner">
+          <div class="copy-col">
+            <div class="eyebrow">
+              <span class="eyebrow-line"></span>
+              <span>02 — El Problema</span>
+            </div>
+
+            <h2 id="problema-heading" class="display-heading">
+              El riesgo letal del<br />
+              <span class="quant-hook hook-xl">sesgo humano.</span>
+            </h2>
+
+            <p class="body-copy">
+              El 90% de los traders fracasa por un error de ejecución, no por falta de capital.
+              El miedo, la avaricia y la fatiga tras horas de pantalla cortocircuitan el análisis racional.
+              Estrategias diseñadas a mano generan
+              <span class="quant-hook">Suicidio Matemático.</span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub-slide 1: The Data -->
+      <div class="sub-slide" data-sub="1">
+        <div class="slide-inner">
+          <div class="slide-grid problem-grid">
+
+            <div class="copy-col">
+              <div class="stat-bars">
+                <div class="stat-bar-row">
+                  <div class="sb-labels">
+                    <span class="sb-text">Traders liquidados por decisiones emocionales</span>
+                    <span class="sb-pct" style="color:#FF5566">90%</span>
+                  </div>
+                  <div class="sb-track"><div class="sb-fill" style="width:90%;background:#FF5566;"></div></div>
+                </div>
+                <div class="stat-bar-row">
+                  <div class="sb-labels">
+                    <span class="sb-text">Estrategias manuales que sobreviven 10 años OOS</span>
+                    <span class="sb-pct" style="color:#FF9944">12%</span>
+                  </div>
+                  <div class="sb-track"><div class="sb-fill" style="width:12%;background:#FF9944;"></div></div>
+                </div>
+                <div class="stat-bar-row">
+                  <div class="sb-labels">
+                    <span class="sb-text">Tasa de fallo por sobreoptimización (curve-fitting)</span>
+                    <span class="sb-pct" style="color:#FFCC44">85%</span>
+                  </div>
+                  <div class="sb-track"><div class="sb-fill" style="width:85%;background:#FFCC44;"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel-col">
+              <div class="glass-card">
+                <div class="big-stat">90%</div>
+                <div class="big-stat-label">De los traders fracasa</div>
+                <div class="big-stat-sub">por decisiones emocionales,<br />no por falta de capital.</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub-slide 2: The Verdict -->
+      <div class="sub-slide" data-sub="2">
+        <div class="slide-inner slide-inner--center">
+          <div class="quote-block quote-block--large">
+            <p class="quote-text">"La emoción es el enemigo del rendimiento. La estadística no tiene miedo."</p>
+            <p class="quote-source">— Wall Street Mavericks, Manifiesto Quant</p>
+          </div>
+          <a href="#solucion" class="btn-quant" id="problem-cta">Ver la Solución →</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────────────────────
+       SECTION 3 · SOLUTION — Heatmap Paramétrico (350vh, 4 sub-slides)
+  ──────────────────────────────────────────────────────────── -->
+  <section
+    class="section-scroll"
+    data-section="solution"
+    id="solucion"
+    aria-labelledby="solucion-heading"
+  >
+    <div class="sticky-stage">
+      <div class="stage-overlay" aria-hidden="true"></div>
+
+      <!-- Sub-slide 0: The Thesis -->
+      <div class="sub-slide" data-sub="0">
+        <div class="slide-inner">
+          <div class="copy-col">
+            <div class="eyebrow">
+              <span class="eyebrow-line"></span>
+              <span>03 — La Infraestructura</span>
+            </div>
+
+            <h2 id="solucion-heading" class="display-heading">
+              Arquitectura Quant de<br />
+              <span class="quant-hook hook-xl">Alto Rendimiento.</span>
+            </h2>
+
+            <p class="body-copy">
+              Nuestro ecosistema no se basa en indicadores rezagados. Integramos potencia computacional
+              extrema con datos de primer nivel para extraer <span class="quant-hook">Alpha</span> real.
+              Cada pico del gráfico representa un sistema que sobrevivió a millones de iteraciones.
+              Solo el <span class="quant-hook">0.1%</span> de las lógicas supera todos los filtros.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub-slide 1: The Process -->
+      <div class="sub-slide" data-sub="1">
+        <div class="slide-inner">
+          <div class="copy-col">
+            <div class="eyebrow">
+              <span class="eyebrow-line"></span>
+              <span>Pipeline de Validación</span>
+            </div>
+            <div class="process-steps">
+              <div class="ps-row"><span class="ps-num">01</span><div><div class="ps-label">Búsqueda Genética (SQX)</div><div class="ps-sub">Clústeres de procesadores descubriendo ineficiencias entre 12.4M de combinaciones paramétricas. Walk-Forward OOS riguroso.</div></div></div>
+              <div class="ps-row"><span class="ps-num">02</span><div><div class="ps-label">Microestructura y Flujo de Órdenes</div><div class="ps-sub">Datos Level 2 (dxFeed), absorción institucional, Delta Acumulado y volumen anclado (MIDAS).</div></div></div>
+              <div class="ps-row"><span class="ps-num">03</span><div><div class="ps-label">Data Science y ML</div><div class="ps-sub">Python + XGBoost procesando datos tabulares. Patrones estadísticos ocultos en bases de datos robustas.</div></div></div>
+              <div class="ps-row"><span class="ps-num">04</span><div><div class="ps-label">Validación Monte Carlo</div><div class="ps-sub">5.000 iteraciones de estrés. Inyección de ruido, slippage adverso, secuencias alteradas. Solo el 0.1% sobrevive.</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub-slide 2: Live Proof -->
+      <div class="sub-slide" data-sub="2">
+        <div class="slide-inner slide-inner--center">
+          <div class="glass-card glass-card--dark glass-card--wide">
+            <div class="systems-header">
+              <span>Sistemas en Producción — Q2 2026</span>
+              <span class="live-badge">
+                <span class="live-dot" aria-hidden="true"></span>LIVE
+              </span>
+            </div>
+
+            <div class="sys-row">
+              <span class="sys-name">WSM-TREND-01</span><span class="sys-mkt">NQ / ES</span>
+              <span class="sys-sr t-green">SR 2.34</span><span class="sys-dd">−7.1%</span>
+            </div>
+            <div class="sys-row">
+              <span class="sys-name">WSM-FLOW-03</span><span class="sys-mkt">EUR/USD</span>
+              <span class="sys-sr t-green">SR 1.92</span><span class="sys-dd">−9.8%</span>
+            </div>
+            <div class="sys-row">
+              <span class="sys-name">WSM-BREAKOUT-07</span><span class="sys-mkt">GC / CL</span>
+              <span class="sys-sr t-green">SR 2.11</span><span class="sys-dd">−6.3%</span>
+            </div>
+
+            <div class="agg-metrics">
+              <div class="agg-m"><div class="agg-k">Sharpe Pond.</div><div class="agg-v">2.12</div></div>
+              <div class="agg-m"><div class="agg-k">Win Rate</div><div class="agg-v">61.8%</div></div>
+              <div class="agg-m"><div class="agg-k">DD Máx</div><div class="agg-v">−11.2%</div></div>
+              <div class="agg-m"><div class="agg-k">Sistemas</div><div class="agg-v">3 live</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub-slide 3: Call to Action -->
+      <div class="sub-slide" data-sub="3">
+        <div class="slide-inner slide-inner--center">
+          <div class="copy-col copy-col--center">
+            <p class="body-copy body-copy--center">
+              Solo el <span class="quant-hook">0.1%</span> de las lógicas sobrevive al pipeline completo.
+              Los sistemas desplegados operan con ventaja matemática verificada, no con esperanza.
+            </p>
+            <div class="cta-row cta-row--center">
+              <a href="#portfolio"   class="btn-quant" id="solution-cta">Auditar el Portfolio</a>
+              <a href="#laboratorio" class="btn-ghost" id="solution-cta-2">Unirse al Lab</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────────────────────
+       SECTION 4 · LAB — Grafo de Conocimiento (250vh, 2 sub-slides)
+  ──────────────────────────────────────────────────────────── -->
+  <section
+    class="section-scroll"
+    data-section="lab"
+    id="cerebro"
+    aria-labelledby="lab-heading"
+  >
+    <div class="sticky-stage">
+      <div class="stage-overlay" aria-hidden="true"></div>
+
+      <!-- Sub-slide 0: The Brain -->
+      <div class="sub-slide" data-sub="0">
+        <div class="slide-inner">
+          <div class="copy-col">
+            <div class="eyebrow">
+              <span class="eyebrow-line"></span>
+              <span>04 — El Cerebro Digital</span>
+            </div>
+
+            <h2 id="lab-heading" class="display-heading">
+              Documentación y<br />
+              <span class="quant-hook hook-xl">rigor científico.</span>
+            </h2>
+
+            <p class="body-copy">
+              Cada hallazgo, backtest fallido y optimización de código se estructura en nuestro
+              <span class="quant-hook">Grafo de Conocimiento Semántico</span>.
+              No operamos por sensaciones; operamos sobre un repositorio interconectado de
+              investigación financiera en constante evolución.
+            </p>
+
+            <div class="nodes-grid">
+              <div class="node-item"><div class="node-val">2.400+</div><div class="node-label">Backtests documentados</div></div>
+              <div class="node-item"><div class="node-val">Activo</div><div class="node-label">Grafo semántico</div></div>
+              <div class="node-item"><div class="node-val">24/7</div><div class="node-label">Evolución continua</div></div>
+              <div class="node-item"><div class="node-val">100%</div><div class="node-label">Disciplina documental</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub-slide 1: The System -->
+      <div class="sub-slide" data-sub="1">
+        <div class="slide-inner">
+          <div class="slide-grid lab-grid">
+
+            <div class="copy-col">
+              <div class="quote-block">
+                <p class="quote-text">"La disciplina institucional comienza en la documentación."</p>
+                <p class="quote-source">— Wall Street Mavericks</p>
+              </div>
+              <div class="cta-row">
+                <a href="#laboratorio" class="btn-quant" id="lab-cta">Unirse al Quant Lab</a>
+                <a href="#portfolio"   class="btn-ghost" id="lab-cta-2">Ver el Portfolio</a>
+              </div>
+            </div>
+
+            <div class="panel-col">
+              <div class="glass-card glass-card--dark">
+                <div class="live-header">
+                  <span class="live-dot" aria-hidden="true"></span>
+                  <span class="live-label">Sistema Vivo</span>
+                </div>
+                <div class="code-block">
+                  <div><span class="t-green">▶</span> knowledge_graph.py --sync</div>
+                  <div class="t-indent">nodes: <span class="t-light">14.823</span></div>
+                  <div class="t-indent">edges: <span class="t-light">89.204</span></div>
+                  <div class="t-indent">last_update: <span class="t-green">live</span> <span class="cursor-blink t-green">█</span></div>
+                </div>
+                <div class="areas-grid">
+                  <div class="area-chip">Order Flow Research</div>
+                  <div class="area-chip">Algoritmos ML / AI</div>
+                  <div class="area-chip">Backtesting Riguroso</div>
+                  <div class="area-chip">Risk &amp; Portfolio Mgmt.</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════
+       STANDARD SCROLL ZONE — solid #080808 background.
+       z-index: 2 fully occludes the WebGL canvas.
+       Canvas fades to opacity:0 when user scrolls here.
+  ════════════════════════════════════════════════════════════ -->
+
+  <div id="portfolio" class="section-standard">
+    <Solution />
+  </div>
+
+  <div class="section-standard">
+    <Brain />
+  </div>
+
+  <div class="section-standard">
+    <LeadCapture />
+  </div>
+
+  <Footer />
+
+</BaseLayout>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SUB-SLIDE SCROLL ENGINE
+     Calculates scroll progress per section, drives sub-slide
+     opacity cross-fades, and writes window.__wsmScroll for the
+     WebGL SceneManager to read each frame.
+     No while, no break, no continue, no pass.
+═══════════════════════════════════════════════════════════ -->
+<script>
+  window.__wsmScroll = window.__wsmScroll || { activeSection: 'hero', progress: 0 };
+
+  /**
+   * Compute sequential opacity for a sub-slide.
+   * Completely avoids overlap: current slide fades out to 0 BEFORE next slide fades in.
+   * No forbidden keywords — pure math.
+   */
+  const getSubSlideOpacity = (progress: number, index: number, total: number): number => {
+    const seg = 1 / total;
+    const start = index * seg;
+    const end = (index + 1) * seg;
+
+    // Boundary rules: keep first/last slides opaque when out of container bounds
+    if (index === 0 && progress <= 0) return 1;
+    if (index === total - 1 && progress >= 1) return 1;
+
+    // Strict bounds: if outside segment, opacity is strictly 0 (no overlap)
+    if (progress <= start || progress >= end) return 0;
+
+    // Inside segment, compute fade-in (start) and fade-out (end)
+    const fadeLen = seg * 0.15; // 15% of segment is used for fading
+
+    const fadeIn = index === 0 ? 1 : Math.min(1, (progress - start) / fadeLen);
+    const fadeOut = index === total - 1 ? 1 : Math.min(1, (end - progress) / fadeLen);
+
+    return Math.min(fadeIn, fadeOut);
+  };
+
+  // ── Gather section-scroll elements and their sub-slides ──
+  const sections = Array.from(document.querySelectorAll('.section-scroll'));
+  const canvasEl = document.getElementById('wsm-webgl') as HTMLCanvasElement | null;
+
+  interface SectionEntry {
+    el: HTMLElement;
+    sceneId: string;
+    subSlides: HTMLElement[];
+    top: number;
+    height: number;
+  }
+
+  let sectionEntries: SectionEntry[] = sections.map(el => ({
+    el: el as HTMLElement,
+    sceneId: (el as HTMLElement).dataset.section || '',
+    subSlides: Array.from(el.querySelectorAll('.sub-slide')) as HTMLElement[],
+    top: (el as HTMLElement).offsetTop,
+    height: (el as HTMLElement).offsetHeight,
+  }));
+
+  // Cache offsets and recalculate on resize
+  const cacheOffsets = () => {
+    sectionEntries = sectionEntries.map(entry => ({
+      ...entry,
+      top: window.scrollY + entry.el.getBoundingClientRect().top,
+      height: entry.el.offsetHeight,
+    }));
+  };
+  window.addEventListener('resize', cacheOffsets, { passive: true });
+
+  // Canvas fade transition
+  if (canvasEl) {
+    canvasEl.style.transition = 'opacity 0.6s ease';
+  }
+
+  // ── Main scroll handler ──
+  const updateScrollState = () => {
+    const scrollY = window.scrollY;
+    let foundActive: string | null = null;
+    let foundProgress = 0;
+
+    sectionEntries.forEach(entry => {
+      const scrollable = Math.max(1, entry.height - window.innerHeight);
+      const scrolled = scrollY - entry.top;
+      const progress = Math.min(1, Math.max(0, scrolled / scrollable));
+      const isInRange = scrollY >= entry.top && scrollY < entry.top + entry.height;
+
+      if (isInRange) {
+        foundActive = entry.sceneId;
+        foundProgress = progress;
+      }
+
+      // Update sub-slide opacities via cross-fade
+      const total = entry.subSlides.length;
+      entry.subSlides.forEach((slide, i) => {
+        const op = getSubSlideOpacity(progress, i, total);
+        slide.style.opacity = String(Math.max(0, Math.min(1, op)));
+        slide.style.pointerEvents = op > 0.5 ? 'auto' : 'none';
+      });
+    });
+
+    // Publish scroll state for SceneManager
+    window.__wsmScroll.activeSection = foundActive;
+    window.__wsmScroll.progress = foundProgress;
+
+    // Canvas visibility: fade out when past all 3D sections
+    if (canvasEl) {
+      canvasEl.style.opacity = foundActive ? '1' : '0';
+    }
+  };
+
+  window.addEventListener('scroll', updateScrollState, { passive: true });
+  updateScrollState();
+</script>
+
+<style>
+/* ════════════════════════════════════════════════════════════
+   SLIDE LAYOUT — scoped styles for scroll-jacking sub-slides.
+   Class-based BEM-like naming to avoid global leakage.
+════════════════════════════════════════════════════════════ */
+
+/* Inner wrapper: centers content, respects nav height */
+.slide-inner {
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 5rem 2rem 2rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.slide-inner--center {
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  text-align: center;
+}
+
+/* Base slide grid — overridden per-section */
+.slide-grid {
+  display: grid;
+  align-items: center;
+  width: 100%;
+  gap: 4rem;
+}
+.hero-grid     { grid-template-columns: 38.2fr 61.8fr; }
+.problem-grid  { grid-template-columns: 61.8fr 38.2fr; }
+.solution-grid { grid-template-columns: 38.2fr 61.8fr; }
+.lab-grid      { grid-template-columns: 61.8fr 38.2fr; }
+
+/* ── Typography ── */
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+.eyebrow-line {
+  width: 2rem;
+  height: 1px;
+  background: #00FF66;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.eyebrow span:last-child {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #00FF66;
+}
+
+.display-heading {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: clamp(2.2rem, 4.8vw, 3.75rem);
+  line-height: 1.0;
+  letter-spacing: -0.055em;
+  color: #fff;
+  margin: 0;
+}
+.hook-xl { font-size: clamp(2.4rem, 5.2vw, 4rem); }
+
+.body-copy {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.85;
+  color: #D1D5DB;
+  max-width: 48ch;
+  margin: 0;
+}
+.body-copy--center {
+  text-align: center;
+  max-width: 56ch;
+}
+
+/* copy-col gap */
+.copy-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.copy-col--center {
+  align-items: center;
+  text-align: center;
+}
+
+/* ── CTA row ── */
+.cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.875rem;
+}
+.cta-row--center {
+  justify-content: center;
+}
+
+/* ── Stats strip (Hero) ── */
+.stats-strip {
+  display: flex;
+  gap: 2.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.stats-strip--vertical {
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.stat-item { display: flex; flex-direction: column; }
+.stat-val {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: 1.2rem;
+  color: #00FF66;
+  letter-spacing: -0.04em;
+}
+.stat-sub {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #4B5563;
+  margin-top: 0.2rem;
+}
+
+/* ── Terminal (Hero) ── */
+.panel-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.terminal-float {
+  position: relative;
+  width: 100%;
+  max-width: 540px;
+  animation: float 7s ease-in-out infinite;
+}
+.terminal-card {
+  background: rgba(10,10,10,0.82);
+  border: 1px solid rgba(0,255,102,0.18);
+  border-radius: 16px;
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 0 40px rgba(0,255,102,0.05), inset 0 1px 0 rgba(255,255,255,0.03);
+}
+.terminal-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: rgba(13,13,13,0.9);
+  border-bottom: 1px solid rgba(0,255,102,0.09);
+}
+.dot { width: 11px; height: 11px; border-radius: 50%; display: block; }
+.dot-red   { background: #FF5F57; }
+.dot-amber { background: #FEBC2E; }
+.dot-green { background: #28C840; }
+.terminal-title {
+  margin-left: auto;
+  font-family: 'Courier New', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  color: #374151;
+  text-transform: uppercase;
+}
+.terminal-body {
+  padding: 1.1rem 1.4rem 0.75rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.72rem;
+  line-height: 1.9;
+  color: #4B5563;
+}
+.metrics-bar {
+  margin-top: 0.875rem;
+  padding: 0.8rem;
+  background: rgba(13,13,13,0.8);
+  border-radius: 10px;
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 0.5rem;
+}
+.metric { text-align: center; }
+.m-label { font-size: 0.5rem; color: #374151; letter-spacing: 0.07em; text-transform: uppercase; font-family: 'Inter',sans-serif; }
+.m-val   { font-size: 0.85rem; font-weight: 700; font-family: 'Inter',sans-serif; margin-top: 0.2rem; }
+
+.corner-tl, .corner-br { position: absolute; width: 28px; height: 28px; pointer-events: none; }
+.corner-tl { top:-7px; right:-7px; border-top: 1.5px solid rgba(0,255,102,0.4); border-right: 1.5px solid rgba(0,255,102,0.4); border-radius: 0 7px 0 0; }
+.corner-br { bottom:-7px; left:-7px; border-bottom: 1.5px solid rgba(0,255,102,0.4); border-left: 1.5px solid rgba(0,255,102,0.4); border-radius: 0 0 0 7px; }
+
+/* ── Scroll hint ── */
+.scroll-hint {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  z-index: 10;
+}
+.scroll-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.52rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #374151;
+}
+.scroll-line {
+  width: 1px;
+  height: 36px;
+  background: linear-gradient(to bottom, #00FF66, transparent);
+  animation: scan-ticker 2.4s ease-in-out infinite;
+}
+
+/* ── Stat bars (Problem) ── */
+.stat-bars { display: flex; flex-direction: column; gap: 0.875rem; max-width: 50ch; }
+.stat-bar-row { display: flex; flex-direction: column; gap: 0.35rem; }
+.sb-labels { display: flex; justify-content: space-between; }
+.sb-text { font-family: 'Inter',sans-serif; font-size: 0.72rem; color: #6B7280; }
+.sb-pct  { font-family: 'Inter',sans-serif; font-size: 0.72rem; font-weight: 700; }
+.sb-track { height: 2px; background: rgba(255,255,255,0.05); border-radius: 999px; overflow: hidden; }
+.sb-fill  { height: 100%; border-radius: 999px; opacity: 0.75; }
+
+/* ── Glass card (shared) ── */
+.glass-card {
+  background: rgba(8,8,8,0.72);
+  backdrop-filter: blur(22px);
+  border: 1px solid rgba(0,255,102,0.14);
+  border-radius: 16px;
+  padding: 1.75rem;
+}
+.glass-card--dark { background: rgba(6,6,6,0.82); }
+.glass-card--wide { width: 100%; max-width: 680px; }
+
+/* Big stat (Problem) */
+.big-stat     { font-family:'Inter',sans-serif; font-weight:900; font-size:5rem; letter-spacing:-0.07em; color:#00FF66; line-height:1; }
+.big-stat-label { font-family:'Inter',sans-serif; font-size:0.68rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:#4B5563; margin-top:0.6rem; }
+.big-stat-sub { font-family:'Inter',sans-serif; font-size:0.78rem; color:#6B7280; margin-top:0.3rem; line-height:1.55; }
+
+/* Quote block (Problem + Lab) */
+.quote-block {
+  padding: 1.1rem 1.4rem;
+  border-left: 2px solid #00FF66;
+  background: rgba(0,255,102,0.025);
+  border-radius: 0 8px 8px 0;
+}
+.quote-block--large {
+  padding: 2rem 2.5rem;
+  max-width: 640px;
+}
+.quote-text   { font-family:'Playfair Display',Georgia,serif; font-style:italic; font-size:0.88rem; color:#D1D5DB; line-height:1.65; }
+.quote-block--large .quote-text { font-size: 1.15rem; line-height: 1.75; }
+.quote-source { font-family:'Inter',sans-serif; font-size:0.62rem; color:#4B5563; margin-top:0.6rem; letter-spacing:0.1em; text-transform:uppercase; }
+
+/* ── Process steps (Solution) ── */
+.process-steps { display: flex; flex-direction: column; gap: 1rem; }
+.ps-row { display: flex; align-items: flex-start; gap: 1rem; }
+.ps-num { font-family:'Inter',sans-serif; font-size:0.58rem; font-weight:700; letter-spacing:0.14em; color:rgba(0,255,102,0.4); flex-shrink:0; padding-top:0.15rem; }
+.ps-label { font-family:'Inter',sans-serif; font-size:0.7rem; font-weight:700; color:#fff; letter-spacing:-0.01em; }
+.ps-sub   { font-family:'Inter',sans-serif; font-size:0.67rem; color:#4B5563; margin-top:0.2rem; line-height: 1.65; max-width: 44ch; }
+
+/* ── Systems table (Solution) ── */
+.systems-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family:'Inter',sans-serif;
+  font-size:0.62rem;
+  font-weight:700;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  color:#4B5563;
+  margin-bottom:1.1rem;
+}
+.live-badge { display:flex; align-items:center; gap:0.35rem; color:#00FF66; }
+.live-dot {
+  width: 6px; height: 6px;
+  background: #00FF66;
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+.sys-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-family:'Inter',sans-serif;
+  font-size:0.72rem;
+}
+.sys-name { color:#D1D5DB; font-weight:600; font-family:'Courier New',monospace; font-size:0.67rem; letter-spacing:0.04em; }
+.sys-mkt  { color:#6B7280; }
+.sys-sr   { font-weight:700; }
+.sys-dd   { color:#D1D5DB; }
+.agg-metrics {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap:0.75rem;
+  margin-top:1.1rem;
+  padding-top:0.9rem;
+  border-top:1px solid rgba(0,255,102,0.09);
+}
+.agg-k { font-size:0.55rem; color:#4B5563; letter-spacing:0.1em; text-transform:uppercase; font-family:'Inter',sans-serif; }
+.agg-v { font-size:0.92rem; font-weight:700; color:#fff; font-family:'Inter',sans-serif; margin-top:0.2rem; letter-spacing:-0.03em; }
+
+/* ── Nodes grid (Lab) ── */
+.nodes-grid {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 1px;
+  background: rgba(0,255,102,0.07);
+  border-radius: 14px;
+  overflow: hidden;
+  max-width: 48ch;
+}
+.node-item {
+  background: rgba(8,8,8,0.72);
+  backdrop-filter: blur(12px);
+  padding: 1.1rem 1.4rem;
+}
+.node-val   { font-family:'Inter',sans-serif; font-weight:900; font-size:1.4rem; color:#00FF66; letter-spacing:-0.04em; line-height:1; }
+.node-label { font-family:'Inter',sans-serif; font-size:0.63rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#6B7280; margin-top:0.35rem; }
+
+/* ── Lab right panel ── */
+.live-header { display:flex; align-items:center; gap:0.6rem; margin-bottom:1rem; }
+.live-label  { font-family:'Inter',sans-serif; font-size:0.62rem; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#00FF66; }
+.code-block {
+  font-family:'Courier New',monospace;
+  font-size:0.72rem;
+  color:#4B5563;
+  line-height:1.75;
+  margin-bottom:1.1rem;
+}
+.t-indent { padding-left: 1rem; }
+.areas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; }
+.area-chip {
+  display: flex; align-items: center; gap: 0.55rem;
+  padding: 0.55rem 0.7rem;
+  background: rgba(0,255,102,0.03);
+  border: 1px solid rgba(0,255,102,0.1);
+  border-radius: 8px;
+  font-family:'Inter',sans-serif;
+  font-size:0.63rem;
+  color:#6B7280;
+  line-height:1.3;
+}
+.area-chip::before {
+  content: '';
+  width: 4px; height: 4px;
+  background: #00FF66;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Shared text utilities ── */
+.t-green { color: #00FF66; }
+.t-light { color: #D1D5DB; }
+.t-dim   { color: #4B5563; }
+.fw-bold { font-weight: 700; }
+.mt-s    { margin-top: 0.4rem; }
+
+/* ── Panel col layout for Problem/Lab ── */
+.problem-grid .panel-col,
+.lab-grid     .panel-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  justify-content: center;
+}
+
+/* ─── Keyframes ─────────────────────────────────────── */
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-9px)} }
+@keyframes scan-ticker {
+  0%  { transform:scaleY(0); transform-origin:top;    }
+  48% { transform:scaleY(1); transform-origin:top;    }
+  50% { transform:scaleY(1); transform-origin:bottom; }
+  100%{ transform:scaleY(0); transform-origin:bottom; }
+}
+@keyframes pulse-dot { 0%,100%{opacity:.4;transform:scale(1)} 50%{opacity:1;transform:scale(1.3)} }
+
+/* ─── Responsive ─────────────────────────────────────── */
+@media (max-width: 960px) {
+  .slide-grid {
+    grid-template-columns: 1fr !important;
+    gap: 2.5rem !important;
+  }
+  .hero-grid .panel-col { display: none; }
+
+  .slide-inner { padding: 4rem 1.25rem 1.5rem; align-items: flex-start; }
+  .slide-inner--center { align-items: center; }
+  .copy-col    { gap: 1.25rem; }
+  .stats-strip { gap: 1.5rem; }
+  .nodes-grid  { max-width: 100%; }
+  .stat-bars   { max-width: 100%; }
+  .glass-card--wide { max-width: 100%; }
+}
+</style>

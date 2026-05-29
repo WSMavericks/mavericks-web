@@ -1,0 +1,181 @@
+/* ─────────────────────────────────────────────
+   Wall Street Mavericks — Global Stylesheet
+   Tailwind v4 CSS-first configuration
+   Scroll-Jacking Architecture v2
+───────────────────────────────────────────── */
+
+@import "tailwindcss";
+
+/* ─── Custom Design Tokens ─── */
+@theme {
+  /* Colors */
+  --color-carbon: #080808;
+  --color-carbon-mid: #0D0D0D;
+  --color-carbon-light: #121212;
+  --color-carbon-border: #1A1A1A;
+  --color-quant-green: #00FF66;
+  --color-quant-green-dim: rgba(0, 255, 102, 0.12);
+  --color-quant-green-glow: rgba(0, 255, 102, 0.25);
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #D1D5DB;
+  --color-text-muted: #6B7280;
+
+  /* Fonts */
+  --font-family-sans: 'Inter', system-ui, sans-serif;
+  --font-family-serif: 'Playfair Display', Georgia, serif;
+
+  /* Animations */
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-pulse-green: pulse-green 4s ease-in-out infinite;
+  --animate-glow-flicker: glow-flicker 5s ease-in-out infinite;
+}
+
+/* ─── Base ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  background-color: #080808;
+  color: #D1D5DB;
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+/* ─── Keyframes ─── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-10px); }
+}
+
+@keyframes pulse-green {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 0.8; }
+}
+
+@keyframes glow-flicker {
+  0%, 90%, 100% { box-shadow: 0 0 30px rgba(0,255,102,0.06), inset 0 1px 0 rgba(255,255,255,0.04); }
+  92%           { box-shadow: 0 0 50px rgba(0,255,102,0.14), inset 0 1px 0 rgba(255,255,255,0.06); }
+  95%           { box-shadow: 0 0 30px rgba(0,255,102,0.06), inset 0 1px 0 rgba(255,255,255,0.04); }
+  97%           { box-shadow: 0 0 45px rgba(0,255,102,0.12), inset 0 1px 0 rgba(255,255,255,0.05); }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scan-ticker {
+  0%   { transform: scaleY(0); transform-origin: top;    opacity: 0.8; }
+  48%  { transform: scaleY(1); transform-origin: top;    opacity: 0.8; }
+  50%  { transform: scaleY(1); transform-origin: bottom; opacity: 0.8; }
+  100% { transform: scaleY(0); transform-origin: bottom; opacity: 0;   }
+}
+
+@keyframes wsm-bounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(5px); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SCROLL-JACKING SYSTEM
+   Each major section is a tall container (250–350vh) with a
+   sticky viewport (100vh). Sub-slides cross-fade within the
+   viewport driven by scroll progress (JS).
+   The WebGL canvas (position:fixed, z-index:0) renders behind.
+═══════════════════════════════════════════════════════════════ */
+
+.section-scroll {
+  position: relative;
+  z-index: 1;
+}
+
+/* Per-section scroll heights — total ≈ 1200vh */
+.section-scroll[data-section="hero"]     { height: 250vh; }
+.section-scroll[data-section="problem"]  { height: 350vh; }
+.section-scroll[data-section="solution"] { height: 350vh; }
+.section-scroll[data-section="lab"]      { height: 250vh; }
+
+/* Sticky viewport — locks to screen while parent scrolls */
+.sticky-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+}
+
+/* Dark gradient overlay — text contrast over 3D canvas */
+.stage-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg,
+      rgba(8,8,8,0.72) 0%,
+      rgba(8,8,8,0.18) 18%,
+      rgba(8,8,8,0.0)  38%,
+      rgba(8,8,8,0.0)  68%,
+      rgba(8,8,8,0.72) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Sub-slides: stacked, opacity cross-faded by scroll JS */
+.sub-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity;
+  z-index: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   STANDARD SCROLL SECTIONS — below the scroll-jacking zone.
+   Solid background fully occludes the WebGL canvas.
+═══════════════════════════════════════════════════════════════ */
+
+.section-standard {
+  position: relative;
+  z-index: 2;
+  background: #080808;
+  border-top: 1px solid rgba(0, 255, 102, 0.07);
+}
+
+.section-standard:first-of-type,
+#portfolio.section-standard {
+  border-top: none;
+  background: linear-gradient(180deg, rgba(8,8,8,0) 0%, #080808 60px);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   REVEAL SYSTEM — IntersectionObserver-powered fade-in.
+   Used ONLY in .section-standard regions.
+═══════════════════════════════════════════════════════════════ */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity  0.6s cubic-bezier(0.22, 0.68, 0, 1.1),
+    transform 0.6s cubic-bezier(0.22, 0.68, 0, 1.1);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+.reveal-delay-1 { transition-delay: 0.08s; }
+.reveal-delay-2 { transition-delay: 0.16s; }
+.reveal-delay-3 { transition-delay: 0.26s; }
+.reveal-delay-4 { transition-delay: 0.38s; }
+
+/* ─── Transition bridge: last section-scroll → first standard section ─── */
+#portfolio::before {
+  content: '';
+  display: block;
+  height: 80px;
+  margin-top: -80px;
+  background: linear-gradient(180deg, transparent, #080808);
+  pointer-events: none;
+  position: relative;
+  z-index: 3;
+}

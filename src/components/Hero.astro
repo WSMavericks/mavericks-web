@@ -1,0 +1,152 @@
+---
+// Hero.astro — Fibonacci 8/13 split, floating terminal, updated copy from landing_content.md §1
+import SvgTextures from './SvgTextures.astro';
+---
+
+<section
+  id="hero"
+  aria-label="Sección principal"
+  style="position:relative;min-height:100svh;display:flex;align-items:center;overflow:hidden;background:linear-gradient(135deg,#080808 0%,#0A0A0A 60%,#0C100C 100%);padding-top:68px;"
+>
+  <SvgTextures variant="neural" />
+
+  <!-- Ambient radial glow -->
+  <div aria-hidden="true" style="position:absolute;top:-15%;right:-8%;width:60vw;height:60vw;background:radial-gradient(ellipse at center,rgba(0,255,102,0.05) 0%,transparent 65%);pointer-events:none;animation:pulse-green 6s ease-in-out infinite;"></div>
+  <!-- Bottom left glow -->
+  <div aria-hidden="true" style="position:absolute;bottom:-10%;left:-5%;width:40vw;height:40vw;background:radial-gradient(ellipse at center,rgba(0,255,102,0.03) 0%,transparent 65%);pointer-events:none;"></div>
+
+  <!-- Horizontal rule glow -->
+  <div aria-hidden="true" style="position:absolute;left:0;right:0;top:50%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,255,102,0.07) 30%,rgba(0,255,102,0.12) 50%,rgba(0,255,102,0.07) 70%,transparent);pointer-events:none;"></div>
+
+  <!-- ── Fibonacci grid ── -->
+  <div class="hero-grid" style="position:relative;z-index:10;max-width:1400px;width:100%;margin:0 auto;padding:5rem 2rem;display:grid;grid-template-columns:38.2fr 61.8fr;gap:4rem;align-items:center;">
+
+    <!-- LEFT 38.2% — Copy -->
+    <div style="display:flex;flex-direction:column;gap:2rem;">
+
+      <!-- Eyebrow -->
+      <div class="reveal" style="display:flex;align-items:center;gap:0.75rem;">
+        <span style="width:2rem;height:1px;background:#00FF66;display:inline-block;flex-shrink:0;"></span>
+        <span style="font-family:'Inter',sans-serif;font-size:0.6375rem;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:#00FF66;">Automatización e Infraestructura para Traders Institucionales</span>
+      </div>
+
+      <!-- H1 -->
+      <h1 class="reveal reveal-delay-1" style="font-family:'Inter',sans-serif;font-weight:900;font-size:clamp(2.375rem,5.2vw,4rem);line-height:1.0;letter-spacing:-0.05em;color:#FFFFFF;margin:0;">
+        No adivinamos<br />el mercado.<br />
+        <span class="quant-hook" style="font-size:clamp(2.5rem,5.5vw,4.25rem);">Lo procesamos.</span>
+      </h1>
+
+      <!-- Description — literal from landing_content.md -->
+      <p class="reveal reveal-delay-2" style="font-family:'Inter',sans-serif;font-size:1rem;font-weight:400;line-height:1.8;color:#D1D5DB;max-width:40ch;margin:0;">
+        El trading manual retail es un juego de azar emocional. En Wall Street Mavericks construimos infraestructura de
+        <span class="quant-hook" style="font-size:1rem;">Minería de Datos</span>,
+        validación Monte Carlo y lectura de Order Flow puro para operar exclusivamente con ventaja estadística comprobada.
+      </p>
+
+      <!-- CTAs -->
+      <div class="reveal reveal-delay-3" style="display:flex;flex-wrap:wrap;gap:0.875rem;margin-top:0.25rem;">
+        <a href="#laboratorio" class="btn-quant" id="hero-cta-primary">Audita nuestros sistemas</a>
+        <a href="#solucion"    class="btn-ghost"  id="hero-cta-secondary">Acceder al Manifiesto Quant</a>
+      </div>
+
+      <!-- Stats strip -->
+      <div class="reveal reveal-delay-4" style="display:flex;gap:2.5rem;margin-top:0.75rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.05);">
+        {[
+          { val:'10M+',       sub:'Combinaciones analizadas' },
+          { val:'Monte Carlo',sub:'5.000 iter. por sistema'  },
+          { val:'0ms',        sub:'Latencia emocional'       },
+        ].map((s) => (
+          <div>
+            <div style="font-family:'Inter',sans-serif;font-weight:900;font-size:1.4rem;color:#00FF66;letter-spacing:-0.04em;">{s.val}</div>
+            <div style="font-family:'Inter',sans-serif;font-size:0.65rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:#4B5563;margin-top:0.2rem;">{s.sub}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- RIGHT 61.8% — Floating terminal -->
+    <div class="reveal reveal-delay-2" style="position:relative;display:flex;align-items:center;justify-content:center;min-height:440px;">
+
+      <!-- Floating wrapper — CSS animation -->
+      <div id="hero-terminal-wrap" style="position:relative;width:100%;max-width:580px;animation:float 7s ease-in-out infinite;">
+
+        <!-- Terminal card — glow-flicker animation -->
+        <div id="hero-terminal" style="
+          background:#0A0A0A;
+          border:1px solid rgba(0,255,102,0.2);
+          border-radius:20px;
+          overflow:hidden;
+          animation:glow-flicker 5s ease-in-out infinite;
+          box-shadow:0 0 30px rgba(0,255,102,0.06), inset 0 1px 0 rgba(255,255,255,0.04);
+        ">
+          <!-- Terminal titlebar -->
+          <div style="display:flex;align-items:center;gap:0.5rem;padding:0.875rem 1.25rem;background:#0D0D0D;border-bottom:1px solid rgba(0,255,102,0.1);">
+            <span style="width:11px;height:11px;background:#FF5F57;border-radius:50%;display:block;"></span>
+            <span style="width:11px;height:11px;background:#FEBC2E;border-radius:50%;display:block;"></span>
+            <span style="width:11px;height:11px;background:#28C840;border-radius:50%;display:block;"></span>
+            <span style="margin-left:auto;font-family:'Inter',monospace;font-size:0.62rem;letter-spacing:0.15em;color:#374151;text-transform:uppercase;">wsm_algo_engine v4.2 — LIVE</span>
+          </div>
+
+          <!-- Terminal body -->
+          <div style="padding:1.5rem 1.5rem 0.75rem;font-family:'Courier New',monospace;font-size:0.775rem;line-height:1.95;color:#4B5563;">
+            <div><span style="color:#00FF66;">$</span> <span style="color:#D1D5DB;">init strategy_search --mode=exhaustive --engine=SQX</span></div>
+            <div style="color:#374151;">→ Parameter space: <span style="color:#D1D5DB;">12.4M combinations</span></div>
+            <div style="color:#374151;">→ Walk-Forward OOS split: <span style="color:#D1D5DB;">70/30</span></div>
+            <div style="margin-top:0.5rem;"><span style="color:#00FF66;">$</span> <span style="color:#D1D5DB;">run monte_carlo --iterations=5000 --stress=full</span></div>
+            <div style="color:#374151;">→ Slippage injection: <span style="color:#D1D5DB;">adversarial mode</span></div>
+            <div style="color:#374151;">→ Volatility shock: <span style="color:#D1D5DB;">±3.4σ</span></div>
+            <div style="color:#374151;">→ Survival rate: <span style="color:#00FF66;font-weight:700;">94.7%</span> ✓</div>
+            <div style="margin-top:0.5rem;"><span style="color:#00FF66;">$</span> <span style="color:#D1D5DB;">deploy --algo=WSM-TREND-01 --mode=live</span></div>
+            <div style="color:#374151;">→ Psych. factor eliminated: <span style="color:#00FF66;">TRUE</span></div>
+            <div style="color:#374151;">→ Execution edge confirmed. <span class="cursor-blink" style="color:#00FF66;">█</span></div>
+
+            <!-- Metrics bar -->
+            <div style="margin-top:1rem;padding:1rem;background:#0D0D0D;border-radius:10px;display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;">
+              {[
+                { label:'Win Rate', val:'63.4%', green:true },
+                { label:'Sharpe',   val:'2.18',  green:true },
+                { label:'Max DD',   val:'−8.2%', green:false},
+                { label:'OOS Test', val:'PASS',  green:true },
+              ].map((m) => (
+                <div style="text-align:center;">
+                  <div style="font-size:0.58rem;color:#374151;letter-spacing:0.08em;text-transform:uppercase;font-family:'Inter',sans-serif;">{m.label}</div>
+                  <div style={`font-size:0.9rem;font-weight:700;font-family:'Inter',sans-serif;margin-top:0.2rem;color:${m.green?'#00FF66':'#D1D5DB'};`}>{m.val}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <!-- Corner accent marks -->
+        <div aria-hidden="true" style="position:absolute;top:-8px;right:-8px;width:36px;height:36px;border-top:2px solid rgba(0,255,102,0.5);border-right:2px solid rgba(0,255,102,0.5);border-radius:0 8px 0 0;pointer-events:none;"></div>
+        <div aria-hidden="true" style="position:absolute;bottom:-8px;left:-8px;width:36px;height:36px;border-bottom:2px solid rgba(0,255,102,0.5);border-left:2px solid rgba(0,255,102,0.5);border-radius:0 0 0 8px;pointer-events:none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll ticker -->
+  <div aria-hidden="true" style="position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:0.5rem;">
+    <span style="font-family:'Inter',sans-serif;font-size:0.58rem;letter-spacing:0.22em;text-transform:uppercase;color:#374151;">Scroll</span>
+    <div style="width:1px;height:44px;background:linear-gradient(to bottom,#00FF66,transparent);animation:scan-ticker 2.4s ease-in-out infinite;"></div>
+  </div>
+</section>
+
+<style>
+  @keyframes float        { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  @keyframes pulse-green  { 0%,100%{opacity:.35} 50%{opacity:.8} }
+  @keyframes glow-flicker {
+    0%,90%,100%{box-shadow:0 0 30px rgba(0,255,102,.06),inset 0 1px 0 rgba(255,255,255,.04)}
+    92%{box-shadow:0 0 55px rgba(0,255,102,.14),inset 0 1px 0 rgba(255,255,255,.06)}
+    95%{box-shadow:0 0 30px rgba(0,255,102,.06),inset 0 1px 0 rgba(255,255,255,.04)}
+    97%{box-shadow:0 0 48px rgba(0,255,102,.12),inset 0 1px 0 rgba(255,255,255,.05)}
+  }
+  @keyframes scan-ticker {
+    0%{transform:scaleY(0);transform-origin:top}
+    48%{transform:scaleY(1);transform-origin:top}
+    50%{transform:scaleY(1);transform-origin:bottom}
+    100%{transform:scaleY(0);transform-origin:bottom}
+  }
+  @media (max-width:900px) {
+    .hero-grid { grid-template-columns:1fr !important; gap:3rem !important; }
+  }
+</style>

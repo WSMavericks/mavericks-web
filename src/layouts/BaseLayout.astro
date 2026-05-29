@@ -1,0 +1,746 @@
+---
+import '../styles/global.css';
+
+export interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Wall Street Mavericks | Infraestructura Cuantitativa y Flujo de Órdenes',
+  description = 'Desarrollo, estrés estadístico y ejecución algorítmica. La diferencia absoluta entre adivinar y operar con ventaja matemática.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#080808" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title}</title>
+
+    <!-- Noscript: canvas hidden, sections visible without JS -->
+    <noscript>
+      <style>
+        #wsm-webgl { display: none; }
+        .sub-slide { opacity: 1 !important; pointer-events: auto !important; position: relative !important; }
+        .section-scroll { height: auto !important; }
+        .sticky-stage { position: relative !important; height: auto !important; }
+      </style>
+    </noscript>
+
+    <style>
+      /* ── Reset ── */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      html {
+        background-color: #080808;
+        color: #D1D5DB;
+        font-family: 'Inter', system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+      }
+
+      /* ── Scrollbar ── */
+      ::-webkit-scrollbar          { width: 3px; }
+      ::-webkit-scrollbar-track    { background: #080808; }
+      ::-webkit-scrollbar-thumb    { background: #00FF66; border-radius: 999px; }
+
+      /* ── Selection ── */
+      ::selection { background: rgba(0,255,102,0.2); color: #fff; }
+
+      /* ─────────────────────────────────────
+         QUANT HOOK — Playfair Display italic
+      ───────────────────────────────────── */
+      .quant-hook {
+        font-family: 'Playfair Display', Georgia, serif;
+        font-style: italic;
+        font-weight: 700;
+        color: #00FF66;
+        display: inline;
+      }
+
+      /* ─────────────────────────────────────
+         SCROLL REVEAL  (opacity + translateY)
+         Applied via IntersectionObserver
+      ───────────────────────────────────── */
+      .reveal {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.65s cubic-bezier(.22,.68,0,1.2),
+                    transform 0.65s cubic-bezier(.22,.68,0,1.2);
+      }
+      .reveal.visible          { opacity: 1; transform: translateY(0); }
+      .reveal-delay-1          { transition-delay: 0.10s; }
+      .reveal-delay-2          { transition-delay: 0.20s; }
+      .reveal-delay-3          { transition-delay: 0.32s; }
+      .reveal-delay-4          { transition-delay: 0.45s; }
+
+      /* ─────────────────────────────────────
+         BTN QUANT — ghost green, hover invert
+      ───────────────────────────────────── */
+      .btn-quant {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        border: 1px solid #00FF66;
+        color: #00FF66;
+        background: transparent;
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        font-size: 0.8125rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 0.8125rem 1.875rem;
+        border-radius: 12px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background 0.25s ease, color 0.25s ease,
+                    box-shadow 0.25s ease, transform 0.2s ease;
+        white-space: nowrap;
+      }
+      .btn-quant:hover {
+        background: #00FF66;
+        color: #080808;
+        box-shadow: 0 0 28px rgba(0,255,102,0.35);
+        transform: translateY(-1px);
+      }
+      .btn-quant:active { transform: translateY(0); }
+
+      /* ─────────────────────────────────────
+         BTN GHOST — dim secondary
+      ───────────────────────────────────── */
+      .btn-ghost {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        border: 1px solid rgba(255,255,255,0.15);
+        color: #9CA3AF;
+        background: transparent;
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
+        font-size: 0.8125rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 0.8125rem 1.875rem;
+        border-radius: 12px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: border-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
+        white-space: nowrap;
+      }
+      .btn-ghost:hover {
+        border-color: #00FF66;
+        color: #00FF66;
+        transform: translateY(-1px);
+      }
+
+      /* ─────────────────────────────────────
+         NOISE overlay (film grain)
+      ───────────────────────────────────── */
+      .noise-layer {
+        position: fixed; inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.022'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 9998;
+        mix-blend-mode: overlay;
+      }
+
+      /* ─── cursor blink ─── */
+      @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+      .cursor-blink { animation: blink 1.1s step-end infinite; }
+
+      /* ── section divider glow ── */
+      .section-divider {
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(0,255,102,0.15) 30%, rgba(0,255,102,0.25) 50%, rgba(0,255,102,0.15) 70%, transparent);
+      }
+    </style>
+  </head>
+
+  <body style="background:#080808;">
+    <div class="noise-layer" aria-hidden="true"></div>
+
+    <!--
+      WSM WebGL Canvas — fixed, full-viewport, z-index:0.
+      Visible behind .section-scroll (transparent bg).
+      Fades to opacity:0 when user enters .section-standard zones.
+    -->
+    <canvas
+      id="wsm-webgl"
+      aria-hidden="true"
+      style="position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;display:block;will-change:transform;"
+    ></canvas>
+
+    <slot />
+
+    <!-- ═══════════════════════════════════════════════════════════
+         UTILITY SCRIPTS — all in one block, no conflicts.
+
+         1. Reveal observer → ONLY for .section-standard .reveal
+         2. Nav blur on scroll
+    ═══════════════════════════════════════════════════════════ -->
+    <script>
+      // ─── 1. Reveal — only inside .section-standard ───────────────
+      const revealObs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              revealObs.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.2, rootMargin: '0px 0px -60px 0px' }
+      );
+      document.querySelectorAll('.section-standard .reveal')
+        .forEach((el) => revealObs.observe(el));
+
+      // ─── 2. Nav blur on scroll ───────────────────────────────────
+      const nav = document.getElementById('main-nav');
+      const handleScroll = () => {
+        if (!nav) return;
+        const past = window.scrollY > 50;
+        nav.style.backdropFilter    = past ? 'blur(20px) saturate(180%)' : 'none';
+        nav.style.backgroundColor   = past ? 'rgba(8,8,8,0.88)' : 'transparent';
+        nav.style.borderBottomColor = past ? 'rgba(0,255,102,0.12)' : 'transparent';
+      };
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      handleScroll();
+    </script>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         WSM SceneManager — Three.js
+         Single WebGL context, 4 scene groups, scroll-driven rotation.
+         Cross-fade transitions between scenes via lerp.
+         Reads window.__wsmScroll for scroll progress + active section.
+         No while, no break, no continue, no pass.
+         All iteration: forEach, map, for(;;), traverse callbacks.
+    ══════════════════════════════════════════════════════════════ -->
+    <script>
+    import * as THREE from 'three';
+
+    // ── 1. Canvas + mobile detection ─────────────────────────────────
+    const canvas      = document.getElementById('wsm-webgl') as HTMLCanvasElement | null;
+    const isMobile    = window.innerWidth < 768;
+    const PX_RATIO    = isMobile ? Math.min(1, devicePixelRatio) : Math.min(2, devicePixelRatio);
+    const prefersRed  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Initialize scroll data with default
+    window.__wsmScroll = window.__wsmScroll || { activeSection: 'hero', progress: 0 };
+
+    if (!canvas) { console.warn('[WSM] WebGL canvas not found'); }
+
+    if (canvas) {
+      // ── 2. Renderer ────────────────────────────────────────────────
+      const renderer = new THREE.WebGLRenderer({
+        canvas,
+        antialias: !isMobile,
+        alpha: true,
+        powerPreference: 'high-performance',
+      });
+      renderer.setPixelRatio(PX_RATIO);
+      renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+      renderer.setClearColor(0x000000, 0);
+
+      // ── 3. Shared camera ───────────────────────────────────────────
+      const camera = new THREE.PerspectiveCamera(
+        55, canvas.clientWidth / canvas.clientHeight, 0.1, 100
+      );
+      camera.position.set(0, 0, 10);
+      camera.lookAt(0, 0, 0);
+
+      // ── 4. Main scene container ────────────────────────────────────
+      const mainScene = new THREE.Scene();
+
+      // ── 5. CAMERA TARGETS per scene ───────────────────────────────
+      const CAMERA_TARGETS: Record<string, { pos: THREE.Vector3; look: THREE.Vector3 }> = {
+        hero:     { pos: new THREE.Vector3(0, 0,   10), look: new THREE.Vector3(0, 0, 0) },
+        problem:  { pos: new THREE.Vector3(0, 0,   12), look: new THREE.Vector3(0, 0, 0) },
+        solution: { pos: new THREE.Vector3(0, 4.5,  9), look: new THREE.Vector3(0, 1, 0) },
+        lab:      { pos: new THREE.Vector3(0, 0,   12), look: new THREE.Vector3(0, 0, 0) },
+      };
+
+      // ── 6. ROTATION RANGES — scroll-driven Y rotation per scene ──
+      const ROTATION_RANGES: Record<string, { from: number; to: number }> = {
+        hero:     { from: 0,     to: 0.25  },
+        problem:  { from: -0.1,  to: 0.35  },
+        solution: { from: 0,     to: 0.65  },
+        lab:      { from: -0.15, to: 0.3   },
+      };
+
+      // ─────────────────────────────────────────────────────────────
+      // UTILITY: set opacity on every material in a Three.js Group
+      // Uses group.traverse + forEach — no break, no continue.
+      // ─────────────────────────────────────────────────────────────
+      const setGroupOpacity = (group: THREE.Group, globalAlpha: number) => {
+        group.traverse((obj: THREE.Object3D) => {
+          const m = (obj as THREE.Mesh).material;
+          if (!m) return;
+          const mats = Array.isArray(m) ? m : [m];
+          mats.forEach((mat: THREE.Material) => {
+            if ((mat as any)._baseOpacity === undefined) {
+              (mat as any)._baseOpacity = mat.opacity !== undefined ? mat.opacity : 1.0;
+            }
+            mat.transparent = true;
+            mat.opacity = (mat as any)._baseOpacity * globalAlpha;
+          });
+        });
+      };
+
+      // ═══════════════════════════════════════════════════════════════
+      //   SCENE BUILDERS — return { group, update(timeSec) }
+      // ═══════════════════════════════════════════════════════════════
+
+      // ─────────────────────────────────────
+      // SCENE 1 — HERO: "Order Flow"
+      // Thousands of particles streaming horizontally.
+      // Rotation is scroll-driven (handled externally).
+      // ─────────────────────────────────────
+      const buildHeroScene = () => {
+        const group = new THREE.Group();
+        const N     = isMobile ? 1800 : 5000;
+
+        const positions = new Float32Array(N * 3);
+        const colors    = new Float32Array(N * 3);
+        const velocities = new Float32Array(N);
+
+        for (let i = 0; i < N; i++) {
+          positions[i * 3]     = (Math.random() - 0.5) * 22;
+          positions[i * 3 + 1] = (Math.random() - 0.5) * 12;
+          positions[i * 3 + 2] = (Math.random() - 0.5) * 8;
+
+          const dir     = Math.random() > 0.3 ? 1 : -1;
+          const speed   = (Math.random() * 0.035 + 0.008) * dir;
+          velocities[i] = speed;
+
+          const brightness = 0.25 + Math.random() * 0.75;
+          colors[i * 3]     = 0;
+          colors[i * 3 + 1] = brightness;
+          colors[i * 3 + 2] = brightness * 0.4;
+        }
+
+        const geo = new THREE.BufferGeometry();
+        geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geo.setAttribute('color',    new THREE.BufferAttribute(colors, 3));
+
+        const points = new THREE.Points(geo, new THREE.PointsMaterial({
+          size: 0.045,
+          vertexColors: true,
+          transparent: true,
+          opacity: 1,
+          sizeAttenuation: true,
+        }));
+        group.add(points);
+
+        const update = () => {
+          if (prefersRed) return;
+          const pos = (points.geometry.attributes.position as THREE.BufferAttribute).array as Float32Array;
+          for (let i = 0; i < N; i++) {
+            pos[i * 3] += velocities[i];
+            if (pos[i * 3] >  12) pos[i * 3] = -12;
+            if (pos[i * 3] < -12) pos[i * 3] =  12;
+          }
+          (points.geometry.attributes.position as THREE.BufferAttribute).needsUpdate = true;
+        };
+
+        return { group, update };
+      };
+
+      // ─────────────────────────────────────
+      // SCENE 2 — PROBLEM: "Sistemas Quebrados"
+      // Multiple equity curves that grow then fracture.
+      // No Math.random() in update loop — pre-seeded parameters.
+      // ─────────────────────────────────────
+      const buildProblemScene = () => {
+        const group     = new THREE.Group();
+        const N_CURVES  = isMobile ? 18 : 30;
+        const STEPS     = 120;
+
+        const curveParams = Array.from({ length: N_CURVES }, (_, i) => ({
+          amplitude: 1.2 + Math.sin(i * 2.618) * 0.5,
+          wobbleFreq: 6  + Math.sin(i * 1.414) * 4,
+          phase:     i * 0.7,
+          crashAt:   0.48 + Math.sin(i * 3.14159) * 0.2,
+          zOffset:   (i - N_CURVES / 2) * 0.25,
+          opacity:   0.18 + Math.sin(i * 5.1) * 0.12,
+        }));
+
+        const curveLines = curveParams.map((p) => {
+          const geo = new THREE.BufferGeometry();
+          const pos = new Float32Array(STEPS * 3);
+          geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+          const line = new THREE.Line(geo, new THREE.LineBasicMaterial({
+            color: 0x00FF66,
+            transparent: true,
+            opacity: p.opacity,
+          }));
+          group.add(line);
+          return line;
+        });
+
+        const update = (time: number) => {
+          if (prefersRed) return;
+          curveParams.forEach((p, ci) => {
+            const line = curveLines[ci];
+            const pos  = (line.geometry.attributes.position as THREE.BufferAttribute).array as Float32Array;
+
+            for (let j = 0; j < STEPS; j++) {
+              const t = j / (STEPS - 1);
+              const x = (t - 0.5) * 14;
+              const baseY = p.amplitude * Math.log(1 + t * 4.5) * 0.7 - 0.4;
+              const wobble = Math.sin(t * p.wobbleFreq + p.phase + time * 0.4) * 0.09;
+              const crashFraction = Math.max(0, (t - p.crashAt) / (1 - p.crashAt));
+              const chaosAmp = crashFraction * 2.8;
+              const chaos = Math.sin(t * 18 + time * 2.8 + p.phase) * chaosAmp
+                          + Math.sin(t * 37 - time * 1.9 + p.phase) * chaosAmp * 0.45
+                          + Math.cos(t * 62 + time * 3.5 + p.phase) * chaosAmp * 0.25;
+              const drop = crashFraction * 4.2;
+
+              pos[j * 3]     = x;
+              pos[j * 3 + 1] = baseY + wobble + chaos - drop;
+              pos[j * 3 + 2] = p.zOffset;
+            }
+            (line.geometry.attributes.position as THREE.BufferAttribute).needsUpdate = true;
+          });
+        };
+
+        return { group, update };
+      };
+
+      // ─────────────────────────────────────
+      // SCENE 3 — SOLUTION: "Heatmap Paramétrico"
+      // Gaussian landscape with wireframe.
+      // Rotation is scroll-driven (no auto-rotation in update).
+      // ─────────────────────────────────────
+      const buildSolutionScene = () => {
+        const group    = new THREE.Group();
+        const SEGS     = isMobile ? 22 : 60;
+
+        const gaussianLandscape = (x: number, z: number) => {
+          const g1 = 2.50 * Math.exp(-(Math.pow(x + 2.0, 2) + Math.pow(z + 1.0, 2)) / 3.5);
+          const g2 = 2.00 * Math.exp(-(Math.pow(x - 2.0, 2) + Math.pow(z + 2.0, 2)) / 3.0);
+          const g3 = 1.75 * Math.exp(-(Math.pow(x - 0.5, 2) + Math.pow(z - 2.5, 2)) / 4.0);
+          const noise = 0.20 * Math.sin(x * 1.8 + 0.5) * Math.cos(z * 2.1)
+                      + 0.12 * Math.cos(x * 3.2) * Math.sin(z * 1.4);
+          return Math.max(0, g1 + g2 + g3 + noise);
+        };
+
+        const surfGeo = new THREE.PlaneGeometry(10, 10, SEGS, SEGS);
+        surfGeo.rotateX(-Math.PI / 2);
+        const positions = surfGeo.attributes.position;
+        for (let i = 0; i < positions.count; i++) {
+          positions.setY(i, gaussianLandscape(positions.getX(i), positions.getZ(i)));
+        }
+        positions.needsUpdate = true;
+        surfGeo.computeVertexNormals();
+        surfGeo.computeBoundingSphere();
+
+        group.add(new THREE.Mesh(surfGeo, new THREE.MeshBasicMaterial({
+          color: 0x001a08, transparent: true, opacity: 0.65,
+        })));
+        group.add(new THREE.LineSegments(
+          new THREE.WireframeGeometry(surfGeo),
+          new THREE.LineBasicMaterial({ color: 0x00FF66, transparent: true, opacity: 0.18 })
+        ));
+
+        const floorGeo = new THREE.PlaneGeometry(16, 16, isMobile ? 14 : 26, isMobile ? 14 : 26);
+        floorGeo.rotateX(-Math.PI / 2);
+        const floor = new THREE.LineSegments(
+          new THREE.WireframeGeometry(floorGeo),
+          new THREE.LineBasicMaterial({ color: 0x00FF66, transparent: true, opacity: 0.05 })
+        );
+        floor.position.y = -0.1;
+        group.add(floor);
+
+        // Procedural glow texture
+        const buildGlowTex = () => {
+          const sz = 64;
+          const off = document.createElement('canvas');
+          off.width = off.height = sz;
+          const ctx = off.getContext('2d')!;
+          const g   = ctx.createRadialGradient(sz/2, sz/2, 0, sz/2, sz/2, sz/2);
+          g.addColorStop(0,    'rgba(0,255,102,1)');
+          g.addColorStop(0.35, 'rgba(0,255,102,0.4)');
+          g.addColorStop(1,    'rgba(0,255,102,0)');
+          ctx.fillStyle = g;
+          ctx.fillRect(0, 0, sz, sz);
+          return new THREE.CanvasTexture(off);
+        };
+        const glowTex = buildGlowTex();
+
+        // Peak markers
+        const peakDefs = [
+          { x: -2.0, z: -1.0 },
+          { x:  2.0, z: -2.0 },
+          { x:  0.5, z:  2.5 },
+        ];
+        const mGeo = new THREE.SphereGeometry(0.07, isMobile ? 6 : 10, 6);
+        const mMat = new THREE.MeshBasicMaterial({ color: 0x00FF66 });
+        const glowBaseMat = new THREE.SpriteMaterial({
+          map: glowTex, transparent: true,
+          blending: THREE.AdditiveBlending, depthWrite: false, opacity: 0.75,
+        });
+        peakDefs.forEach((def) => {
+          const y = gaussianLandscape(def.x, def.z);
+          const sphere = new THREE.Mesh(mGeo, mMat);
+          sphere.position.set(def.x, y + 0.07, def.z);
+          group.add(sphere);
+          const glow = new THREE.Sprite(glowBaseMat.clone());
+          glow.position.set(def.x, y + 0.07, def.z);
+          glow.scale.set(1.3, 1.3, 1);
+          group.add(glow);
+        });
+
+        group.position.set(0, -1, 0);
+
+        // No auto-rotation — scroll drives rotation.y externally.
+        const update = () => {};
+
+        return { group, update };
+      };
+
+      // ─────────────────────────────────────
+      // SCENE 4 — LAB: "Grafo de Conocimiento"
+      // Network of nodes and edges.
+      // Y rotation is scroll-driven. Subtle X oscillation remains.
+      // ─────────────────────────────────────
+      const buildLabScene = () => {
+        const group  = new THREE.Group();
+        const N_NODES = isMobile ? 30 : 52;
+        const HUB_IDX = [0, Math.floor(N_NODES * 0.33), Math.floor(N_NODES * 0.66)];
+
+        const nodePositions = Array.from({ length: N_NODES }, (_, i) => {
+          const phi   = Math.acos(1 - 2 * (i + 0.5) / N_NODES);
+          const theta = Math.PI * (1 + Math.sqrt(5)) * i;
+          const r     = 3.8 + Math.sin(i * 2.3) * 0.9;
+          return new THREE.Vector3(
+            r * Math.sin(phi) * Math.cos(theta),
+            r * Math.cos(phi),
+            r * Math.sin(phi) * Math.sin(theta)
+          );
+        });
+
+        const nodeGeo = new THREE.SphereGeometry(0.09, 8, 6);
+        const hubGeo  = new THREE.SphereGeometry(0.18, 12, 8);
+        const nodeMat = new THREE.MeshBasicMaterial({ color: 0x00FF66, transparent: true, opacity: 0.55 });
+        const hubMat  = new THREE.MeshBasicMaterial({ color: 0x00FF66, transparent: true, opacity: 1.0 });
+
+        const hubMeshes: THREE.Mesh[] = [];
+        nodePositions.forEach((pos, i) => {
+          const isHub = HUB_IDX.includes(i);
+          const mesh  = new THREE.Mesh(isHub ? hubGeo : nodeGeo, isHub ? hubMat.clone() : nodeMat);
+          mesh.position.copy(pos);
+          group.add(mesh);
+          if (isHub) hubMeshes.push(mesh);
+        });
+
+        // Edges — LineSegments between nearby nodes
+        const edgeVerts: number[] = [];
+        const MAX_DIST  = 3.6;
+        nodePositions.forEach((posA, i) => {
+          nodePositions.forEach((posB, j) => {
+            const shouldProcess = j > i && posA.distanceTo(posB) < MAX_DIST;
+            if (shouldProcess) {
+              edgeVerts.push(posA.x, posA.y, posA.z, posB.x, posB.y, posB.z);
+            }
+          });
+        });
+        const edgeGeo = new THREE.BufferGeometry();
+        edgeGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(edgeVerts), 3));
+        group.add(new THREE.LineSegments(
+          edgeGeo,
+          new THREE.LineBasicMaterial({ color: 0x00FF66, transparent: true, opacity: 0.15 })
+        ));
+
+        // Glow sprites on hub nodes
+        const buildGlowTex = () => {
+          const sz = 64;
+          const off = document.createElement('canvas');
+          off.width = off.height = sz;
+          const ctx = off.getContext('2d')!;
+          const g   = ctx.createRadialGradient(sz/2, sz/2, 0, sz/2, sz/2, sz/2);
+          g.addColorStop(0,   'rgba(0,255,102,0.9)');
+          g.addColorStop(0.4, 'rgba(0,255,102,0.25)');
+          g.addColorStop(1,   'rgba(0,255,102,0)');
+          ctx.fillStyle = g;
+          ctx.fillRect(0, 0, sz, sz);
+          return new THREE.CanvasTexture(off);
+        };
+        const glowMat = new THREE.SpriteMaterial({
+          map: buildGlowTex(), transparent: true,
+          blending: THREE.AdditiveBlending, depthWrite: false, opacity: 0.6,
+        });
+        hubMeshes.forEach((hub) => {
+          const sprite = new THREE.Sprite(glowMat.clone());
+          sprite.scale.set(1.8, 1.8, 1);
+          sprite.position.copy(hub.position);
+          group.add(sprite);
+        });
+
+        const update = (timeSec: number) => {
+          // Subtle X oscillation (time-based, keeps the graph alive)
+          if (!prefersRed) {
+            group.rotation.x = Math.sin(timeSec * 0.05) * 0.04;
+          }
+          // Pulse hub nodes
+          hubMeshes.forEach((hub, i) => {
+            const s = 1 + Math.sin(timeSec * 1.8 + i * 2.1) * 0.25;
+            hub.scale.setScalar(s);
+          });
+        };
+
+        return { group, update };
+      };
+
+      // ═══════════════════════════════════════════════════════════════
+      //   SCENE REGISTRY
+      // ═══════════════════════════════════════════════════════════════
+      interface SceneEntry {
+        group: THREE.Group;
+        update: (timeSec: number) => void;
+        _opacity: number;
+        _lastAppliedOpacity: number;
+      }
+
+      const scenes: Record<string, SceneEntry> = {
+        hero:     { ...buildHeroScene(),     _opacity: 0, _lastAppliedOpacity: -1 },
+        problem:  { ...buildProblemScene(),   _opacity: 0, _lastAppliedOpacity: -1 },
+        solution: { ...buildSolutionScene(),  _opacity: 0, _lastAppliedOpacity: -1 },
+        lab:      { ...buildLabScene(),       _opacity: 0, _lastAppliedOpacity: -1 },
+      };
+
+      // Add all groups to mainScene, start invisible
+      Object.values(scenes).forEach(({ group }) => {
+        setGroupOpacity(group, 0);
+        mainScene.add(group);
+      });
+
+      // ═══════════════════════════════════════════════════════════════
+      //   TRANSITION STATE & ROBUST LERPING
+      // ═══════════════════════════════════════════════════════════════
+      let activeSceneId: string | null = null;
+      const currentLookAt = new THREE.Vector3(0, 0, 0);
+
+      const transitionTo = (id: string | null) => {
+        if (!id || !scenes[id]) return;
+        if (id === activeSceneId) return;
+        activeSceneId = id;
+      };
+
+      // ═══════════════════════════════════════════════════════════════
+      //   MAIN RENDER LOOP
+      // ═══════════════════════════════════════════════════════════════
+      let rafId: number | null = null;
+
+      const tick = (now: number) => {
+        rafId = requestAnimationFrame(tick);
+
+        // ─ 0. Read scroll data from sub-slide engine ──────────────
+        const scrollData = (window as any).__wsmScroll;
+        if (scrollData && scrollData.activeSection) {
+          transitionTo(scrollData.activeSection);
+        }
+
+        // ─ 1. Robust Opacity Transitions ──────────────────────────
+        Object.keys(scenes).forEach(id => {
+          const scene = scenes[id];
+          const targetOpacity = (id === activeSceneId) ? 1 : 0;
+
+          scene._opacity += (targetOpacity - scene._opacity) * 0.06;
+
+          if (Math.abs(scene._opacity - targetOpacity) < 0.005) {
+            scene._opacity = targetOpacity;
+          }
+
+          if (scene._lastAppliedOpacity !== scene._opacity) {
+            scene.group.visible = scene._opacity > 0.001;
+            if (scene.group.visible) {
+              setGroupOpacity(scene.group, scene._opacity);
+            }
+            scene._lastAppliedOpacity = scene._opacity;
+          }
+        });
+
+        // ─ 2. Scroll-Driven Rotation ──────────────────────────────
+        if (scrollData && scrollData.activeSection && ROTATION_RANGES[scrollData.activeSection]) {
+          const range = ROTATION_RANGES[scrollData.activeSection];
+          const activeScene = scenes[scrollData.activeSection];
+          if (activeScene) {
+            const targetY = range.from + (range.to - range.from) * (scrollData.progress || 0);
+            activeScene.group.rotation.y += (targetY - activeScene.group.rotation.y) * 0.06;
+          }
+        }
+
+        // ─ 3. Camera Smooth Lerp (Position & LookAt) ──────────────
+        if (activeSceneId && CAMERA_TARGETS[activeSceneId]) {
+          const target = CAMERA_TARGETS[activeSceneId];
+          camera.position.lerp(target.pos, 0.045);
+          currentLookAt.lerp(target.look, 0.045);
+          camera.lookAt(currentLookAt);
+        }
+
+        // ─ 4. Contextual Updates (Performance Optimization) ───────
+        Object.values(scenes).forEach(scene => {
+          if (scene._opacity > 0 && scene.update) {
+            scene.update(now * 0.001);
+          }
+        });
+
+        // ─ 5. Render ──────────────────────────────────────────────
+        renderer.render(mainScene, camera);
+      };
+
+      rafId = requestAnimationFrame(tick);
+
+      // ── Bootstrap: activate hero on load ─────────────────────────
+      transitionTo('hero');
+
+      // ═══════════════════════════════════════════════════════════════
+      //   VISIBILITY CHANGE — pause rAF when tab is hidden
+      // ═══════════════════════════════════════════════════════════════
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') {
+          if (rafId !== null) {
+            cancelAnimationFrame(rafId);
+            rafId = null;
+          }
+        } else {
+          if (rafId === null) {
+            rafId = requestAnimationFrame(tick);
+          }
+        }
+      });
+
+      // ═══════════════════════════════════════════════════════════════
+      //   RESIZE
+      // ═══════════════════════════════════════════════════════════════
+      window.addEventListener('resize', () => {
+        const w = canvas.clientWidth;
+        const h = canvas.clientHeight;
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+      }, { passive: true });
+    }
+    </script>
+  </body>
+</html>
